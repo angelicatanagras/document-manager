@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const Document = require('../models/Document');
 const User = require('../models/User');
+require('../models/Folder'); // register Folder schema for populate
 
 const computeStatus = (expiryDate) => {
   if (!expiryDate) return 'stored';
@@ -29,6 +30,18 @@ const getFileType = (mimetype, originalname) => {
 const uploadDocument = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+
+    const existing = await Document.findOne({
+      userId: req.user.id,
+      originalName: req.file.originalname,
+      deletedAt: null,
+    });
+    if (existing) {
+      fs.unlinkSync(req.file.path); // remove the just-uploaded temp file
+      return res.status(409).json({
+        message: `A document named "${req.file.originalname}" already exists. Rename the file or delete the existing one first.`,
+      });
+    }
 
     const { name, folderId, tags, expiryDate } = req.body;
     const fileType = getFileType(req.file.mimetype, req.file.originalname);
@@ -72,7 +85,6 @@ const getDocuments = async (req, res) => {
 
     const docs = await Document.find(query)
       .populate('folderId', 'name')
-      .populate('tags', 'name color')
       .sort(sortObj);
 
     const updated = docs.map((d) => ({

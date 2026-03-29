@@ -16,12 +16,13 @@ export default function Dashboard() {
   const [editDoc, setEditDoc] = useState(null);
   const [deleteDoc, setDeleteDoc] = useState(null);
   const [dragging, setDragging] = useState(false);
+  const [fetchError, setFetchError] = useState('');
   const dropRef = useRef();
 
   useEffect(() => {
     axiosInstance.get('/api/documents', { params: { sort: '' } })
       .then(({ data }) => setRecentDocs(data.slice(0, 6)))
-      .catch(() => {});
+      .catch((err) => setFetchError(err.response?.data?.message || err.message || 'Failed to load documents.'));
   }, []);
 
   const handleDownload = async (doc) => {
@@ -100,6 +101,7 @@ export default function Dashboard() {
 
           {/* Recent documents */}
           <div>
+            {fetchError && <div className="mb-3 px-3 py-2 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">{fetchError}</div>}
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-[14px] font-bold text-[#1E293B]">Recent Documents</h2>
               <button onClick={() => navigate('/documents')} className="text-xs text-[#0F766E] font-medium hover:underline">

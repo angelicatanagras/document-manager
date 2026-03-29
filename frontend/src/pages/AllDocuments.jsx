@@ -29,8 +29,8 @@ export default function AllDocuments() {
       if (sort) params.sort = sort;
       const { data } = await axiosInstance.get('/api/documents', { params });
       setDocs(data);
-    } catch {
-      setError('Failed to load documents.');
+    } catch (err) {
+      setError(err.response?.data?.message || err.message || 'Failed to load documents.');
     } finally {
       setLoading(false);
     }

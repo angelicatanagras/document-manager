@@ -10,7 +10,7 @@ const documentSchema = new mongoose.Schema(
     size: { type: Number, required: true }, // bytes
     filePath: { type: String, required: true },
     folderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Folder', default: null },
-    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
+    tags: [{ type: String }],
     status: {
       type: String,
       enum: ['valid', 'expiring', 'expired', 'stored'],
