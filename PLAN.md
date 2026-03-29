@@ -136,13 +136,29 @@ document-manager/
 - AUTH-4: Role-based middleware (user vs. admin)
 - AUTH-5: Admin login with role guard
 
-### Epic 3 — Upload & Manage Documents
-- DOC-1: Single file upload (PDF, JPG, DOCX, XLSX, PNG — max 50 MB)
+### Epic 3 — Upload & Manage Documents ✅ DONE
+- DOC-1: Single file upload (PDF, JPG, DOCX, XLSX, PNG — max 50 MB) ✅
 - DOC-2: Multi-file upload
-- DOC-3: Document detail view (metadata, preview)
-- DOC-4: Rename document (blocked by DOC-3)
-- DOC-5: Download document
-- DOC-6: Soft delete to trash (30-day recovery)
+- DOC-3: Document detail view (metadata, preview) ✅ (card + edit modal)
+- DOC-4: Rename document ✅ (EditModal)
+- DOC-5: Download document ✅
+- DOC-6: Soft delete to trash (30-day recovery) ✅
+
+**New files — backend:**
+- `backend/middleware/uploadMiddleware.js` — multer disk storage, 50 MB limit, type whitelist
+- `backend/controllers/documentController.js` — upload, list, get, update, soft-delete, restore, permanent-delete, download
+- `backend/routes/documentRoutes.js` — full REST routes
+
+**New files — frontend:**
+- `frontend/src/components/Sidebar.jsx` — dark sidebar with nav, storage meter, user profile
+- `frontend/src/components/DocumentCard.jsx` — card with file-type icon, status badge, download/edit/delete actions
+- `frontend/src/components/UploadModal.jsx` — drag-drop upload form (file, name, expiry, tags)
+- `frontend/src/components/EditModal.jsx` — rename + update expiry date
+- `frontend/src/components/ConfirmDialog.jsx` — reusable confirm dialog
+- `frontend/src/pages/AllDocuments.jsx` — 3-col grid, filter pills, search, sort, full CRUD
+- `frontend/src/pages/Dashboard.jsx` — welcome, drag-drop zone, recent 6 documents
+- `frontend/src/pages/Trash.jsx` — trash list with restore and permanent delete
+- Updated `frontend/src/axiosConfig.js` — FormData detection, no forced Content-Type for uploads
 
 ### Epic 4 — Folder Organisation & Categories
 - FOLD-1: Create folder
@@ -248,7 +264,7 @@ cd frontend && npm run dev
 
 ---
 
-### PHASE 2 — GitHub Branching Strategy (3 marks)
+### PHASE 2 — GitHub Branching Strategy (3 marks) — IN PROGRESS
 
 **Rules:**
 - `main` — production-ready only, never commit directly
@@ -257,14 +273,14 @@ cd frontend && npm run dev
 
 **Branch naming:**
 ```
-feature/epic1-setup
-feature/epic2-auth        ← already done, merge this
-feature/epic3-documents
-feature/epic4-folders
-feature/epic5-versions
-feature/epic6-search
-feature/epic7-dashboard
-feature/epic8-admin
+feature/epic1-setup       ✅ pushed — open PR → merge to main
+feature/epic2-auth        ✅ pushed — open PR → merge to main
+feature/epic3-documents   ✅ pushed — open PR → merge to main
+feature/epic4-folders     pending
+feature/epic5-versions    pending
+feature/epic6-search      pending
+feature/epic7-dashboard   pending
+feature/epic8-admin       pending
 ```
 
 **How to create a branch:**
