@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CloudDoc — Lo-Fi Modal Wireframes</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #c0c0c0;
+      padding: 48px 40px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 48px;
+      align-items: flex-start;
+    }
+
+    /* ── SECTION HEADING ── */
+    .section-heading {
+      width: 100%;
+      font-size: 11px;
+      font-weight: 700;
+      color: #333;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #888;
+      margin-bottom: -16px;
+    }
+
+    /* ── MODAL SHELL ── */
+    .modal-wrap { position: relative; }
+    .modal-label {
+      font-size: 12px; font-weight: 700; color: #222;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .modal-screen {
+      background: rgba(0,0,0,0.15);
+      border: 2px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+    }
+    .modal {
+      background: #fff;
+      border: 2px solid #333;
+      border-radius: 6px;
+      padding: 24px;
+    }
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .modal-title { font-size: 15px; font-weight: 700; color: #1a1a1a; }
+    .close-btn {
+      width: 22px; height: 22px;
+      background: #ddd; border: 1px solid #aaa;
+      border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; color: #555; cursor: pointer;
+    }
+    .divider { height: 1px; background: #e0e0e0; margin: 14px 0; }
+
+    /* ── FORM ELEMENTS ── */
+    .field-label { font-size: 10px; font-weight: 700; color: #555; display: block; margin-bottom: 4px; }
+    .field-label .required { color: #888; font-weight: 400; }
+    .input-field {
+      width: 100%; height: 36px;
+      background: #f5f5f5; border: 1.5px solid #bbb;
+      border-radius: 4px;
+      display: flex; align-items: center;
+      padding: 0 10px;
+      font-size: 11px; color: #aaa;
+      margin-bottom: 12px;
+    }
+    .input-field.filled { color: #333; background: #fff; }
+    .input-field.select { justify-content: space-between; }
+    .input-field.select::after { content: "▾"; color: #888; font-size: 11px; }
+    .textarea-field {
+      width: 100%; height: 72px;
+      background: #f5f5f5; border: 1.5px solid #bbb;
+      border-radius: 4px;
+      padding: 8px 10px;
+      font-size: 11px; color: #aaa;
+      margin-bottom: 12px;
+      resize: none;
+    }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field-group { margin-bottom: 0; }
+
+    /* ── BUTTONS ── */
+    .btn-row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; padding: 0 16px; height: 36px;
+      border-radius: 4px; font-size: 12px; font-weight: 700;
+    }
+    .btn-primary { background: #444; color: #fff; }
+    .btn-outline { background: #fff; border: 1.5px solid #bbb; color: #333; }
+    .btn-danger  { background: #777; color: #fff; }
+
+    /* ── CHIPS / TAGS ── */
+    .chip {
+      display: inline-block; padding: 3px 10px;
+      background: #eee; border: 1px solid #bbb;
+      border-radius: 99px; font-size: 10px; color: #555;
+      margin-right: 4px; margin-bottom: 4px;
+    }
+    .chip.active { background: #555; color: #fff; border-color: #555; }
+    .tag {
+      display: inline-block; padding: 2px 8px;
+      background: #eee; border: 1px solid #bbb;
+      border-radius: 3px; font-size: 9px; font-weight: 700; color: #555;
+    }
+
+    /* ── DANGER ZONE ── */
+    .danger-box {
+      background: #f5f5f5; border: 1.5px solid #bbb;
+      border-radius: 4px; padding: 14px; text-align: center;
+      margin-bottom: 16px;
+    }
+    .danger-icon {
+      width: 44px; height: 44px;
+      background: #ddd; border-radius: 50%;
+      margin: 0 auto 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; color: #888;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-bg { height: 6px; background: #e0e0e0; border-radius: 3px; margin: 8px 0; }
+    .progress-fill { height: 6px; background: #555; border-radius: 3px; }
+    .step-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .step-dot { width: 18px; height: 18px; border-radius: 50%; flex-shrink: 0; }
+    .step-dot.done    { background: #555; }
+    .step-dot.active  { background: #888; border: 2px solid #555; }
+    .step-dot.pending { background: #ddd; border: 1px solid #bbb; }
+
+    /* ── FILE DROP ── */
+    .file-drop {
+      border: 2px dashed #aaa; border-radius: 4px;
+      background: #f5f5f5;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 6px; padding: 20px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .file-drop-icon { font-size: 28px; color: #aaa; }
+    .file-drop-text { font-size: 11px; color: #888; }
+    .file-drop-sub  { font-size: 9px;  color: #bbb; }
+
+    .file-selected {
+      background: #f0f0f0; border: 1.5px solid #bbb;
+      border-radius: 4px; padding: 10px 12px;
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 12px;
+    }
+    .file-icon {
+      width: 30px; height: 36px;
+      background: #ddd; border: 1px solid #bbb;
+      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 7px; color: #777; flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION A — ADMIN: USER MODALS
+  ══════════════════════════════════════════════════════ -->
+  <div class="section-heading" style="width:100%;">Admin — User Modals</div>
+
+  <!-- ── A1. ADD USER ── -->
+  <div class="modal-wrap">
+    <div class="modal-label">A1. Add User</div>
+    <div class="modal-screen" style="width:560px; height:520px;">
+      <div class="modal" style="width:460px;">
+        <div class="modal-header">
+          <div class="modal-title">Add New User</div>
+          <div class="close-btn">✕</div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field-group">
+            <span class="field-label">First Name <span class="required">*</span></span>
+            <div class="input-field">First name</div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Last Name <span class="required">*</span></span>
+            <div class="input-field">Last name</div>
+          </div>
+        </div>
+
+        <span class="field-label">Email Address <span class="required">*</span></span>
+        <div class="input-field">email@example.com</div>
+
+        <div class="grid-2">
+          <div class="field-group">
+            <span class="field-label">Role <span class="required">*</span></span>
+            <div class="input-field select filled">User ▾</div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Status <span class="required">*</span></span>
+            <div class="input-field select filled">Active ▾</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="field-group">
+            <span class="field-label">Password <span class="required">*</span></span>
+            <div class="input-field">••••••••</div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Confirm Password <span class="required">*</span></span>
+            <div class="input-field">••••••••</div>
+          </div>
+        </div>
+
+        <span class="field-label">Plan</span>
+        <div class="input-field select filled" style="margin-bottom:18px;">Free ▾</div>
+
+        <div class="divider" style="margin-top:0;"></div>
+        <div class="btn-row">
+          <div class="btn btn-outline">Cancel</div>
+          <div class="btn btn-primary">Add User</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── A2. EDIT USER ── -->
+  <div class="modal-wrap">
+    <div class="modal-label">A2. Edit User</div>
+    <div class="modal-screen" style="width:560px; height:520px;">
+      <div class="modal" style="width:460px;">
+        <div class="modal-header">
+          <div class="modal-title">Edit User</div>
+          <div class="close-btn">✕</div>
+        </div>
+
+        <!-- User identity summary -->
+        <div style="display:flex; align-items:center; gap:12px; padding:10px 12px; background:#f5f5f5; border:1px solid #ddd; border-radius:4px; margin-bottom:14px;">
+          <div style="width:36px;height:36px;background:#ccc;border-radius:50%;flex-shrink:0;"></div>
+          <div>
+            <div style="font-size:12px;font-weight:700;color:#1a1a1a;">Angelica Tanagras</div>
+            <div style="font-size:10px;color:#888;">angelica@email.com · joined Jan 2026</div>
+          </div>
+          <span class="tag" style="margin-left:auto;">Active</span>
+        </div>
+
+        <div class="grid-2">
+          <div class="field-group">
+            <span class="field-label">First Name</span>
+            <div class="input-field filled">Angelica</div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Last Name</span>
+            <div class="input-field filled">Tanagras</div>
+          </div>
+        </div>
+
+        <span class="field-label">Email Address</span>
+        <div class="input-field filled">angelica@email.com</div>
+
+        <div class="grid-2">
+          <div class="field-group">
+            <span class="field-label">Role</span>
+            <div class="input-field select filled">User ▾</div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Status</span>
+            <div class="input-field select filled">Active ▾</div>
+          </div>
+        </div>
+
+        <span class="field-label">Plan</span>
+        <div class="input-field select filled" style="margin-bottom:18px;">Pro ▾</div>
+
+        <div class="divider" style="margin-top:0;"></div>
+        <div class="btn-row">
+          <div class="btn btn-outline">Cancel</div>
+          <div class="btn btn-primary">Save Changes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── A3. DELETE USER ── -->
+  <div class="modal-wrap">
+    <div class="modal-label">A3. Delete User</div>
+    <div class="modal-screen" style="width:440px; height:520px;">
+      <div class="modal" style="width:360px;">
+        <div class="modal-header">
+          <div class="modal-title">Delete User</div>
+          <div class="close-btn">✕</div>
+        </div>
+
+        <div class="danger-box">
+          <div class="danger-icon">🗑</div>
+          <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:6px;">Delete Angelica Tanagras?</div>
+          <div style="font-size:11px;color:#666;line-height:1.5;">This will permanently delete the account and <strong>all associated documents</strong>. This action cannot be undone.</div>
+        </div>
+
+        <!-- What will be deleted -->
+        <div style="margin-bottom:16px;">
+          <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:8px;">Will be permanently deleted:</div>
+          <div style="display:flex;flex-direction:column;gap:5px;">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:#555;padding:6px 8px;background:#f5f5f5;border-radius:3px;">
+              <span>User account</span><span style="font-weight:700;">1</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:#555;padding:6px 8px;background:#f5f5f5;border-radius:3px;">
+              <span>Documents</span><span style="font-weight:700;">48</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:#555;padding:6px 8px;background:#f5f5f5;border-radius:3px;">
+              <span>Storage freed</span><span style="font-weight:700;">1.2 GB</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirm type -->
+        <span class="field-label">Type <strong>DELETE</strong> to confirm</span>
+        <div class="input-field" style="margin-bottom:18px;">Type here...</div>
+
+        <div class="divider" style="margin-top:0;"></div>
+        <div class="btn-row">
+          <div class="btn btn-outline">Cancel</div>
+          <div class="btn btn-danger">Delete User</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       SECTION B — DOCUMENT MODALS
+  ══════════════════════════════════════════════════════ -->
+  <div class="section-heading" style="width:100%; margin-top:8px;">Document Modals</div>
+
+  <!-- ── B1. UPLOAD DOCUMENT ── -->
+  <div class="modal-wrap">
+    <div class="modal-label">B1. Upload Document</div>
+    <div class="modal-screen" style="width:560px; height:600px;">
+      <div class="modal" style="width:480px;">
+        <div class="modal-header">
+          <div class="modal-title">Upload Document</div>
+          <div class="close-btn">✕</div>
+        </div>
+
+        <!-- Drop zone -->
+        <div class="file-drop">
+          <div class="file-drop-icon">↑</div>
+          <div class="file-drop-text">Drag & drop your file here, or <span style="text-decoration:underline;">browse</span></div>
+          <div class="file-drop-sub">PDF, JPG, DOCX, XLSX, PNG — max 50 MB</div>
+        </div>
+
+        <!-- File selected state -->
+        <div class="file-selected">
+          <div class="file-icon">PDF</div>
+          <div style="flex:1;">
+            <div style="font-size:11px;font-weight:700;color:#1a1a1a;">passport_scan.pdf</div>
+            <div style="font-size:9px;color:#888;">2.1 MB · PDF</div>
+          </div>
+          <div style="font-size:18px;color:#888;cursor:pointer;">✕</div>
+        </div>
+
+        <span class="field-label">Document Name <span class="required">*</span></span>
+        <div class="input-field filled">Passport Scan</div>
+
+        <div class="grid-2">
+          <div class="field-group">
+            <span class="field-label">Folder</span>
+            <div class="input-field select filled">Identity Documents ▾</div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Category</span>
+            <div class="input-field select filled">Identity ▾</div>
+          </div>
+        </div>
+
+        <span class="field-label">Tags</span>
+        <div style="margin-bottom:12px;">
+          <span class="chip active">Identity</span>
+          <span class="chip active">Government</span>
+          <span class="chip active">Travel</span>
+          <span class="chip">+ Add Tag</span>
+        </div>
+
+        <span class="field-label">Expiry Date <span class="required">(optional)</span></span>
+        <div class="input-field select" style="margin-bottom:18px;">Select date 📅</div>
+
+        <div class="divider" style="margin-top:0;"></div>
+        <div class="btn-row">
+          <div class="btn btn-outline">Cancel</div>
+          <div class="btn btn-primary">Save Document</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── B2. EDIT DOCUMENT ── -->
+  <div class="modal-wrap">
+    <div class="modal-label">B2. Edit Document</div>
+    <div class="modal-screen" style="width:560px; height:600px;">
+      <div class="modal" style="width:480px;">
+        <div class="modal-header">
+          <div class="modal-title">Edit Document</div>
+          <div class="close-btn">✕</div>
+        </div>
+
+        <!-- Current file info -->
+        <div class="file-selected" style="margin-bottom:14px;">
+          <div class="file-icon">PDF</div>
+          <div style="flex:1;">
+            <div style="font-size:11px;font-weight:700;color:#1a1a1a;">Passport_scan.pdf</div>
+            <div style="font-size:9px;color:#888;">2.1 MB · uploaded 17 Mar 2026</div>
+          </div>
+          <span class="tag">Valid</span>
+        </div>
+
+        <span class="field-label">Document Name <span class="required">*</span></span>
+        <div class="input-field filled">Passport Scan 2026</div>
+
+        <div class="grid-2">
+          <div class="field-group">
+            <span class="field-label">Folder</span>
+            <div class="input-field select filled">Identity Documents ▾</div>
+          </div>
+          <div class="field-group">
+            <span class="field-label">Category</span>
+            <div class="input-field select filled">Identity ▾</div>
+          </div>
+        </div>
+
+        <span class="field-label">Tags</span>
+        <div style="margin-bottom:12px;">
+          <span class="chip active">Identity</span>
+          <span class="chip active">Government</span>
+          <span class="chip">Travel</span>
+          <span class="chip">+ Add Tag</span>
+        </div>
+
+        <span class="field-label">Expiry Date</span>
+        <div class="input-field filled select" style="margin-bottom:12px;">12 Apr 2028 📅</div>
+
+        <span class="field-label">Status</span>
+        <div class="input-field select filled" style="margin-bottom:18px;">Valid ▾</div>
+
+        <div class="divider" style="margin-top:0;"></div>
+        <div class="btn-row">
+          <div class="btn btn-outline">Cancel</div>
+          <div class="btn btn-primary">Save Changes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── B3. DELETE DOCUMENT ── -->
+  <div class="modal-wrap">
+    <div class="modal-label">B3. Delete Document</div>
+    <div class="modal-screen" style="width:440px; height:600px;">
+      <div class="modal" style="width:360px;">
+        <div class="modal-header">
+          <div class="modal-title">Delete Document</div>
+          <div class="close-btn">✕</div>
+        </div>
+
+        <div class="danger-box">
+          <div class="danger-icon">🗑</div>
+          <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:6px;">Delete this document?</div>
+          <div style="font-size:11px;color:#666;line-height:1.5;">This will permanently remove the file from your vault. This action cannot be undone.</div>
+        </div>
+
+        <!-- Document summary -->
+        <div class="file-selected" style="margin-bottom:14px;">
+          <div class="file-icon">PDF</div>
+          <div style="flex:1;">
+            <div style="font-size:11px;font-weight:700;color:#1a1a1a;">Passport_scan.pdf</div>
+            <div style="font-size:9px;color:#888;">Identity · 2.1 MB · uploaded 17 Mar 2026</div>
+          </div>
+        </div>
+
+        <!-- Warning checklist -->
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:18px;">
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:10px;color:#666;">
+            <span style="margin-top:1px;">☐</span>
+            <span>I understand this file will be permanently deleted</span>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;font-size:10px;color:#666;">
+            <span style="margin-top:1px;">☐</span>
+            <span>I have a local copy or no longer need this file</span>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="btn-row">
+          <div class="btn btn-outline">Cancel</div>
+          <div class="btn btn-danger">Delete Document</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

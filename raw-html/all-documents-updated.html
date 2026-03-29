@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudDoc — All Documents (with Edit & Delete)</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary:       #0F766E;
+      --primary-teal:  #14B8A6;
+      --primary-light: #CCFBF1;
+      --bg:            #F8FAFC;
+      --card:          #FFFFFF;
+      --sidebar:       #1E293B;
+      --text-primary:  #1E293B;
+      --text-muted:    #64748B;
+      --border:        #E2E8F0;
+      --slate-100:     #F1F5F9;
+      --slate-400:     #94A3B8;
+      --warning:       #D97706;
+      --warning-bg:    #FFFBEB;
+      --danger:        #EF4444;
+      --danger-bg:     #FEF2F2;
+      --danger-border: #FECACA;
+      --success:       #16A34A;
+      --success-bg:    #F0FDF4;
+    }
+
+    body {
+      font-family: 'Instrument Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      width: 1710px;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 210px; min-width: 210px;
+      background: var(--sidebar);
+      display: flex; flex-direction: column;
+      height: 100vh;
+    }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 10px;
+      padding: 20px 16px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--primary-teal); border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 18px; height: 18px; }
+    .logo-text { font-size: 16px; font-weight: 700; color: #F1F5F9; letter-spacing: -0.2px; }
+    .sidebar-nav { flex: 1; padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; }
+    .nav-section { font-size: 10px; font-weight: 600; color: #94A3B8; letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 8px 4px; margin-top: 6px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; border-radius: 6px;
+      color: #CBD5E1; font-size: 13.5px; font-weight: 400;
+    }
+    .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.85; }
+    .nav-item.active { background: rgba(20,184,166,0.18); color: #5EEAD4; }
+    .nav-item.active svg { opacity: 1; }
+    .nav-badge { margin-left: auto; background: var(--warning); color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
+    .sidebar-storage { padding: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .storage-row { display: flex; justify-content: space-between; font-size: 12px; color: #CBD5E1; margin-bottom: 6px; }
+    .storage-row span:last-child { font-size: 11px; color: #94A3B8; }
+    .storage-bar { height: 5px; background: rgba(255,255,255,0.12); border-radius: 99px; overflow: hidden; }
+    .storage-fill { height: 100%; width: 38%; background: var(--primary-teal); border-radius: 99px; }
+    .storage-sub { margin-top: 5px; font-size: 11px; color: #94A3B8; }
+    .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,#0F766E,#14B8A6); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .user-name { font-size: 13px; font-weight: 600; color: #F1F5F9; }
+    .user-role { font-size: 11px; color: #94A3B8; }
+
+    /* ── MAIN ── */
+    .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      height: 52px; background: var(--card);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      padding: 0 20px; gap: 12px; flex-shrink: 0;
+    }
+    .topbar-title { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+    .search-wrap { position: relative; width: 400px; }
+    .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--slate-400); }
+    .search-wrap input { width: 100%; height: 34px; background: var(--slate-100); border: 1px solid var(--border); border-radius: 6px; padding: 0 10px 0 32px; font-size: 13px; color: var(--text-primary); outline: none; font-family: inherit; }
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; height: 34px; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; white-space: nowrap; }
+    .btn svg { width: 14px; height: 14px; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-ghost  { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+    .notif-btn { width: 34px; height: 34px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); display: flex; align-items: center; justify-content: center; position: relative; cursor: pointer; }
+    .notif-btn svg { width: 16px; height: 16px; color: var(--text-muted); }
+    .notif-dot { position: absolute; top: 6px; right: 6px; width: 7px; height: 7px; background: var(--warning); border-radius: 50%; border: 1.5px solid #fff; }
+
+    /* ── CONTENT ── */
+    .content { flex: 1; overflow-y: auto; padding: 18px 24px; }
+
+    /* ── FILTER PILLS ── */
+    .filter-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 14px; border-radius: 99px;
+      font-size: 12.5px; font-weight: 500;
+      border: 1.5px solid var(--border); background: var(--card); color: var(--text-muted);
+    }
+    .pill .count { font-weight: 700; }
+    .pill.active { background: var(--primary-light); border-color: var(--primary-teal); color: var(--primary); font-weight: 700; }
+
+    /* ── META ROW ── */
+    .meta-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .showing-text { font-size: 13px; color: var(--text-muted); }
+    .showing-text strong { color: var(--text-primary); font-weight: 700; }
+    .view-toggle { display: flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .view-btn { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+    .view-btn svg { width: 14px; height: 14px; }
+    .view-btn.on { background: var(--slate-100); }
+    .view-btn.off { background: var(--card); }
+
+    /* ── CARD GRID ── */
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+
+    /* ── DOCUMENT CARD ── */
+    .doc-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; padding: 17px 17px 0 17px;
+      display: flex; flex-direction: column; gap: 10px;
+      transition: box-shadow 0.15s;
+      overflow: hidden;
+    }
+    .doc-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); border-color: #CBD5E1; }
+
+    /* card top: file icon + status badge */
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; }
+    .file-thumb {
+      width: 44px; height: 52px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase;
+      border: 1px solid transparent; overflow: hidden; position: relative; flex-shrink: 0;
+    }
+    .file-thumb::after {
+      content: ''; position: absolute; top: 0; right: 0;
+      width: 10px; height: 10px;
+      border-style: solid; border-width: 0 0 10px 10px;
+    }
+    .ft-pdf  { background: var(--danger-bg);  color: var(--danger);  border-color: var(--danger-border); }
+    .ft-pdf::after  { border-color: transparent transparent var(--danger-border) transparent; }
+    .ft-docx { background: #EEF2FF; color: #4F46E5; border-color: #C7D2FE; }
+    .ft-docx::after { border-color: transparent transparent #C7D2FE transparent; }
+    .ft-xlsx { background: var(--success-bg); color: var(--success); border-color: #BBF7D0; }
+    .ft-xlsx::after { border-color: transparent transparent #BBF7D0 transparent; }
+    .ft-jpg  { background: #EFF6FF; color: #3B82F6; border-color: #BFDBFE; }
+    .ft-jpg::after  { border-color: transparent transparent #BFDBFE transparent; }
+    .ft-png  { background: #EFF6FF; color: #3B82F6; border-color: #BFDBFE; }
+    .ft-png::after  { border-color: transparent transparent #BFDBFE transparent; }
+
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 3px 9px; border-radius: 99px;
+      font-size: 10.5px; font-weight: 600;
+    }
+    .badge-valid    { background: var(--success-bg); color: var(--success); }
+    .badge-expiring { background: var(--warning-bg); color: var(--warning); }
+    .badge-expired  { background: var(--danger-bg);  color: var(--danger); }
+    .badge-stored   { background: var(--slate-100);  color: var(--text-muted); }
+
+    /* card body: name + meta */
+    .card-body { display: flex; flex-direction: column; gap: 4px; }
+    .card-name { font-size: 13px; font-weight: 700; color: var(--text-primary); line-height: 1.35; }
+    .card-meta { display: flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--text-muted); }
+    .card-meta-sep { color: var(--border); }
+
+    /* card footer: category + date + ACTION BUTTONS */
+    .card-footer {
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 0 10px;
+      margin: 0 -1px; /* bleed to card edges */
+    }
+    .card-category {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 11px; color: var(--text-muted);
+    }
+    .card-category svg { width: 11px; height: 11px; flex-shrink: 0; }
+    .card-right { display: flex; align-items: center; gap: 6px; }
+    .card-date { font-size: 11px; color: var(--slate-400); }
+
+    /* ── ACTION BUTTONS (NEW) ── */
+    .card-actions { display: flex; align-items: center; gap: 4px; }
+    .action-btn {
+      width: 26px; height: 26px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; border: 1px solid var(--border);
+      transition: all 0.12s;
+    }
+    .action-btn svg { width: 12px; height: 12px; }
+    .action-edit {
+      background: var(--card); color: var(--text-muted);
+    }
+    .action-edit:hover { background: var(--primary-light); border-color: var(--primary-teal); color: var(--primary); }
+    .action-delete {
+      background: var(--card); color: var(--text-muted);
+    }
+    .action-delete:hover { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger); }
+
+    /* divider between date and actions */
+    .action-divider { width: 1px; height: 14px; background: var(--border); margin: 0 2px; }
+  </style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    </div>
+    <span class="logo-text">CloudDoc</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">Main</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</div>
+    <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>All Documents</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Folders</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Tags</div>
+    <div class="nav-section">Alerts</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Expiring Soon<span class="nav-badge">3</span></div>
+    <div class="nav-section">System</div>
+    <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Trash</div>
+  </nav>
+  <div class="sidebar-storage">
+    <div class="storage-row"><span>Storage</span><span>1.9 / 5 GB</span></div>
+    <div class="storage-bar"><div class="storage-fill"></div></div>
+    <div class="storage-sub">38% used · 3.1 GB free</div>
+  </div>
+  <div class="sidebar-user">
+    <div class="avatar">AT</div>
+    <div><div class="user-name">Angelica T.</div><div class="user-role">Personal account</div></div>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">All Documents</div>
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" placeholder="Search documents…" />
+    </div>
+    <div class="btn btn-ghost" style="margin-left:auto;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/></svg>
+      Filter
+    </div>
+    <div class="btn btn-primary">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Upload
+    </div>
+    <div class="notif-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      <div class="notif-dot"></div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Filter pills -->
+    <div class="filter-row">
+      <span class="pill active">All <span class="count">48</span></span>
+      <span class="pill">IDs <span class="count">12</span></span>
+      <span class="pill">Finance <span class="count">18</span></span>
+      <span class="pill">Work <span class="count">9</span></span>
+      <span class="pill">Health <span class="count">6</span></span>
+      <span class="pill">Other <span class="count">3</span></span>
+    </div>
+
+    <!-- Meta row -->
+    <div class="meta-row">
+      <div class="showing-text">Showing <strong>48</strong> documents</div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <select style="height:30px;border:1px solid var(--border);border-radius:6px;padding:0 8px;font-size:12px;color:var(--text-muted);font-family:inherit;outline:none;">
+          <option>Sort: Newest</option>
+        </select>
+        <div class="view-toggle">
+          <div class="view-btn on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></div>
+          <div class="view-btn off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card grid -->
+    <div class="card-grid">
+
+      <!-- Card 1 -->
+      <div class="doc-card">
+        <div class="card-top">
+          <div class="file-thumb ft-pdf">PDF</div>
+          <span class="status-badge badge-expiring">⏳ 6 days</span>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Passport_Scan_2024.pdf</div>
+          <div class="card-meta"><span>2.4 MB</span><span class="card-meta-sep">·</span><span>PDF</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="card-category">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Identity
+          </div>
+          <div class="card-right">
+            <span class="card-date">2d ago</span>
+            <div class="action-divider"></div>
+            <div class="card-actions">
+              <div class="action-btn action-edit" title="Edit document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+              <div class="action-btn action-delete" title="Delete document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="doc-card">
+        <div class="card-top">
+          <div class="file-thumb ft-docx">DOCX</div>
+          <span class="status-badge badge-valid">✓ Valid</span>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Lease_Agreement_2025.docx</div>
+          <div class="card-meta"><span>518 KB</span><span class="card-meta-sep">·</span><span>Word</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="card-category">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Contracts
+          </div>
+          <div class="card-right">
+            <span class="card-date">5d ago</span>
+            <div class="action-divider"></div>
+            <div class="card-actions">
+              <div class="action-btn action-edit" title="Edit document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+              <div class="action-btn action-delete" title="Delete document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="doc-card">
+        <div class="card-top">
+          <div class="file-thumb ft-xlsx">XLSX</div>
+          <span class="status-badge badge-stored">Stored</span>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Tax_Return_FY2025.xlsx</div>
+          <div class="card-meta"><span>1.1 MB</span><span class="card-meta-sep">·</span><span>Excel</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="card-category">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Finance
+          </div>
+          <div class="card-right">
+            <span class="card-date">1w ago</span>
+            <div class="action-divider"></div>
+            <div class="card-actions">
+              <div class="action-btn action-edit" title="Edit document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+              <div class="action-btn action-delete" title="Delete document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="doc-card">
+        <div class="card-top">
+          <div class="file-thumb ft-jpg">JPG</div>
+          <span class="status-badge badge-valid">✓ Valid</span>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Vaccination_Certificate.jpg</div>
+          <div class="card-meta"><span>3.2 MB</span><span class="card-meta-sep">·</span><span>Image</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="card-category">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Health
+          </div>
+          <div class="card-right">
+            <span class="card-date">2w ago</span>
+            <div class="action-divider"></div>
+            <div class="card-actions">
+              <div class="action-btn action-edit" title="Edit document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+              <div class="action-btn action-delete" title="Delete document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 5 -->
+      <div class="doc-card">
+        <div class="card-top">
+          <div class="file-thumb ft-pdf">PDF</div>
+          <span class="status-badge badge-expired">Expired</span>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Car_Insurance_Policy.pdf</div>
+          <div class="card-meta"><span>780 KB</span><span class="card-meta-sep">·</span><span>PDF</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="card-category">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Insurance
+          </div>
+          <div class="card-right">
+            <span class="card-date">3w ago</span>
+            <div class="action-divider"></div>
+            <div class="card-actions">
+              <div class="action-btn action-edit" title="Edit document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+              <div class="action-btn action-delete" title="Delete document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 6 -->
+      <div class="doc-card">
+        <div class="card-top">
+          <div class="file-thumb ft-png">PNG</div>
+          <span class="status-badge badge-stored">Stored</span>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Birth_Certificate_Certified.png</div>
+          <div class="card-meta"><span>4.8 MB</span><span class="card-meta-sep">·</span><span>Image</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="card-category">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Identity
+          </div>
+          <div class="card-right">
+            <span class="card-date">1mo ago</span>
+            <div class="action-divider"></div>
+            <div class="card-actions">
+              <div class="action-btn action-edit" title="Edit document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+              <div class="action-btn action-delete" title="Delete document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 7 -->
+      <div class="doc-card">
+        <div class="card-top">
+          <div class="file-thumb ft-pdf">PDF</div>
+          <span class="status-badge badge-expiring">⏳ 29 days</span>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Medicare_Card_2025.pdf</div>
+          <div class="card-meta"><span>320 KB</span><span class="card-meta-sep">·</span><span>PDF</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="card-category">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Health
+          </div>
+          <div class="card-right">
+            <span class="card-date">1mo ago</span>
+            <div class="action-divider"></div>
+            <div class="card-actions">
+              <div class="action-btn action-edit" title="Edit document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+              <div class="action-btn action-delete" title="Delete document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 8 -->
+      <div class="doc-card">
+        <div class="card-top">
+          <div class="file-thumb ft-docx">DOCX</div>
+          <span class="status-badge badge-valid">✓ Valid</span>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Employment_Contract_2025.docx</div>
+          <div class="card-meta"><span>890 KB</span><span class="card-meta-sep">·</span><span>Word</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="card-category">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Work
+          </div>
+          <div class="card-right">
+            <span class="card-date">2mo ago</span>
+            <div class="action-divider"></div>
+            <div class="card-actions">
+              <div class="action-btn action-edit" title="Edit document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+              <div class="action-btn action-delete" title="Delete document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 9 -->
+      <div class="doc-card">
+        <div class="card-top">
+          <div class="file-thumb ft-xlsx">XLSX</div>
+          <span class="status-badge badge-stored">Stored</span>
+        </div>
+        <div class="card-body">
+          <div class="card-name">Budget_Tracker_2025.xlsx</div>
+          <div class="card-meta"><span>2.1 MB</span><span class="card-meta-sep">·</span><span>Excel</span></div>
+        </div>
+        <div class="card-footer">
+          <div class="card-category">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+            Finance
+          </div>
+          <div class="card-right">
+            <span class="card-date">2mo ago</span>
+            <div class="action-divider"></div>
+            <div class="card-actions">
+              <div class="action-btn action-edit" title="Edit document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </div>
+              <div class="action-btn action-delete" title="Delete document">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /card-grid -->
+  </div><!-- /content -->
+</div><!-- /main -->
+
+</body>
+</html>

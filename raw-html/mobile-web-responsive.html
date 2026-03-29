@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>DocVault – Web App at Mobile</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #D1D5DB;
+    padding: 50px 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  .screen-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+  }
+  .screen-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #374151;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+
+  /* iPhone 13/14 shell */
+  .iphone {
+    width: 390px;
+    height: 844px;
+    border-radius: 50px;
+    background: #fff;
+    box-shadow:
+      0 0 0 2px #C8CACC,
+      0 0 0 6px #1a1a1a,
+      0 0 0 8px #444,
+      0 35px 100px rgba(0,0,0,0.4);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Dynamic Island / notch */
+  .notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 35px;
+    background: #1a1a1a;
+    border-radius: 0 0 24px 24px;
+    z-index: 200;
+  }
+
+  /* Side buttons */
+  .iphone::before {
+    content: '';
+    position: absolute;
+    left: -9px;
+    top: 130px;
+    width: 4px;
+    height: 34px;
+    background: #888;
+    border-radius: 2px 0 0 2px;
+    box-shadow: 0 46px 0 #888, 0 92px 0 #888;
+    z-index: 300;
+  }
+  .iphone::after {
+    content: '';
+    position: absolute;
+    right: -9px;
+    top: 175px;
+    width: 4px;
+    height: 68px;
+    background: #888;
+    border-radius: 0 2px 2px 0;
+    z-index: 300;
+  }
+
+  /* Status bar overlay */
+  .status-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 54px;
+    z-index: 150;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 26px 10px;
+    pointer-events: none;
+  }
+  .status-bar.light { background: rgba(255,255,255,0.95); }
+  .status-bar.dark  { background: rgba(30,41,59,0.97); }
+  .status-time {
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+  }
+  .status-bar.light .status-time { color: #1E293B; }
+  .status-bar.dark  .status-time { color: #ffffff; }
+  .status-icons { display: flex; align-items: center; gap: 5px; }
+  .status-bar.light .status-icons { color: #1E293B; }
+  .status-bar.dark  .status-icons { color: #ffffff; }
+  .status-icons svg { width: 16px; height: 16px; }
+
+  /* iframe fills the phone below status bar */
+  .phone-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 390px;
+    height: 844px;
+    border: none;
+    border-radius: 50px;
+  }
+
+  /* Home indicator */
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: rgba(0,0,0,0.2);
+    border-radius: 3px;
+    z-index: 200;
+  }
+</style>
+</head>
+<body>
+
+<!-- Dashboard -->
+<div class="screen-wrap">
+  <div class="screen-label">Dashboard</div>
+  <div class="iphone">
+    <div class="notch"></div>
+    <div class="status-bar light">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10L1.5 8.5z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13l-1.5-1.5z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2l-1.5-1.5z"/><circle cx="12" cy="19" r="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg>
+      </div>
+    </div>
+    <iframe class="phone-iframe" src="http://localhost:8765/dashboard.html" scrolling="yes" title="Dashboard"></iframe>
+    <div class="home-indicator"></div>
+  </div>
+</div>
+
+<!-- All Documents -->
+<div class="screen-wrap">
+  <div class="screen-label">All Documents</div>
+  <div class="iphone">
+    <div class="notch"></div>
+    <div class="status-bar light">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10L1.5 8.5z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13l-1.5-1.5z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2l-1.5-1.5z"/><circle cx="12" cy="19" r="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg>
+      </div>
+    </div>
+    <iframe class="phone-iframe" src="http://localhost:8765/all-documents.html" scrolling="yes" title="All Documents"></iframe>
+    <div class="home-indicator"></div>
+  </div>
+</div>
+
+<!-- Upload Modal -->
+<div class="screen-wrap">
+  <div class="screen-label">Upload</div>
+  <div class="iphone">
+    <div class="notch"></div>
+    <div class="status-bar light">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10L1.5 8.5z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13l-1.5-1.5z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2l-1.5-1.5z"/><circle cx="12" cy="19" r="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg>
+      </div>
+    </div>
+    <iframe class="phone-iframe" src="http://localhost:8765/upload-modal.html" scrolling="yes" title="Upload"></iframe>
+    <div class="home-indicator"></div>
+  </div>
+</div>
+
+<!-- Admin Panel -->
+<div class="screen-wrap">
+  <div class="screen-label">Admin Panel</div>
+  <div class="iphone">
+    <div class="notch"></div>
+    <div class="status-bar dark">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10L1.5 8.5z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13l-1.5-1.5z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2l-1.5-1.5z"/><circle cx="12" cy="19" r="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="white"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="rgba(30,41,59,0.9)"/></svg>
+      </div>
+    </div>
+    <iframe class="phone-iframe" src="http://localhost:8765/admin-panel.html" scrolling="yes" title="Admin Panel"></iframe>
+    <div class="home-indicator"></div>
+  </div>
+</div>
+
+<!-- Login -->
+<div class="screen-wrap">
+  <div class="screen-label">Sign In</div>
+  <div class="iphone">
+    <div class="notch"></div>
+    <div class="status-bar light">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10L1.5 8.5z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13l-1.5-1.5z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2l-1.5-1.5z"/><circle cx="12" cy="19" r="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg>
+      </div>
+    </div>
+    <iframe class="phone-iframe" src="http://localhost:8765/login.html" scrolling="yes" title="Login"></iframe>
+    <div class="home-indicator"></div>
+  </div>
+</div>
+
+<!-- Landing Page -->
+<div class="screen-wrap">
+  <div class="screen-label">Landing Page</div>
+  <div class="iphone">
+    <div class="notch"></div>
+    <div class="status-bar dark">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="white"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10L1.5 8.5z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13l-1.5-1.5z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2l-1.5-1.5z"/><circle cx="12" cy="19" r="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="white"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="rgba(30,41,59,0.9)"/></svg>
+      </div>
+    </div>
+    <iframe class="phone-iframe" src="http://localhost:8765/landing.html" scrolling="yes" title="Landing"></iframe>
+    <div class="home-indicator"></div>
+  </div>
+</div>
+
+</body>
+</html>

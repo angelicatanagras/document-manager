@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1800">
+<title>DocVault – Admin Mobile Screens</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+:root {
+  --primary:    #0F766E;
+  --teal:       #14B8A6;
+  --teal-light: #CCFBF1;
+  --dark:       #1E293B;
+  --text:       #1E293B;
+  --muted:      #64748B;
+  --border:     #E2E8F0;
+  --bg:         #F8FAFC;
+  --white:      #FFFFFF;
+  --success:    #16A34A;
+  --warning:    #D97706;
+  --danger:     #EF4444;
+  --font: 'Instrument Sans', sans-serif;
+}
+
+body {
+  font-family: var(--font);
+  background: #C9CBD0;
+  padding: 48px 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 48px;
+  justify-content: flex-start;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+/* ─── SCREEN WRAPPER ─── */
+.sw { display: flex; flex-direction: column; align-items: center; gap: 12px; flex-shrink: 0; }
+.slabel { font-family: var(--font); font-size: 11px; font-weight: 700; color: #374151; text-transform: uppercase; letter-spacing: 1px; }
+
+/* ─── iPHONE SHELL ─── */
+.iphone {
+  width: 390px; height: 844px; border-radius: 50px;
+  background: var(--bg); position: relative; overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12), 0 0 0 2px #A0A3A8, 0 0 0 6px #1C1C1E, 0 0 0 8px #3A3A3C, 0 40px 100px rgba(0,0,0,0.45);
+  display: flex; flex-direction: column;
+}
+.di { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 126px; height: 37px; background: #1C1C1E; border-radius: 20px; z-index: 300; }
+.sbl { position: absolute; left: -3px; top: 120px; display: flex; flex-direction: column; gap: 10px; z-index: 400; }
+.sbl span { display: block; width: 3px; background: #5C5C5E; border-radius: 2px 0 0 2px; }
+.sbl span:nth-child(1) { height: 34px; }
+.sbl span:nth-child(2) { height: 64px; margin-top: 6px; }
+.sbl span:nth-child(3) { height: 64px; }
+.sbr { position: absolute; right: -3px; top: 175px; width: 3px; height: 80px; background: #5C5C5E; border-radius: 0 2px 2px 0; z-index: 400; }
+.hb { position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%); width: 134px; height: 5px; background: rgba(0,0,0,0.18); border-radius: 3px; z-index: 300; }
+
+/* ─── STATUS BAR ─── */
+.sb { height: 54px; display: flex; align-items: flex-end; justify-content: space-between; padding: 0 26px 10px; flex-shrink: 0; z-index: 200; position: relative; background: var(--white); }
+.sb.on-bg { background: var(--bg); }
+.st { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; font-family: var(--font); color: var(--text); }
+.si { display: flex; align-items: center; gap: 5px; color: var(--text); }
+.si svg { width: 16px; height: 16px; }
+
+/* ─── SAFARI BAR ─── */
+.sfbar { background: #F2F2F7; border-bottom: 1px solid #C8C8CC; padding: 8px 12px; display: flex; align-items: center; gap: 8px; flex-shrink: 0; height: 52px; }
+.snb { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: #007AFF; flex-shrink: 0; }
+.snb svg { width: 18px; height: 18px; }
+.snb.off { color: #C7C7CC; }
+.ub { flex: 1; height: 32px; background: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 5px; font-family: var(--font); font-size: 13px; font-weight: 500; color: #1C1C1E; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.li { opacity: 0.55; }
+.li svg { width: 11px; height: 11px; }
+.shbtn { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: #007AFF; flex-shrink: 0; }
+.shbtn svg { width: 20px; height: 20px; }
+
+/* ─── SAFARI BOTTOM ─── */
+.sfbot { height: 50px; display: flex; align-items: center; justify-content: space-around; padding: 0 8px; flex-shrink: 0; position: absolute; bottom: 0; left: 0; right: 0; z-index: 200; background: #F2F2F7; border-top: 1px solid #C8C8CC; }
+.sbb { width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #007AFF; }
+.sbb svg { width: 22px; height: 22px; }
+.sbb.off { color: #C7C7CC; }
+.tbc { width: 22px; height: 22px; border: 1.5px solid #007AFF; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #007AFF; font-family: var(--font); }
+
+/* ─── PAGE CONTENT ─── */
+.pc { flex: 1; overflow-y: auto; overflow-x: hidden; padding-bottom: 50px; background: var(--bg); }
+.pc::-webkit-scrollbar { display: none; }
+
+/* ─── TOPBARS ─── */
+.atop {
+  height: 52px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px; flex-shrink: 0; position: sticky; top: 0; z-index: 100;
+  background: var(--white); border-bottom: 1px solid var(--border);
+}
+.alogo { display: flex; align-items: center; gap: 8px; }
+.alogoi { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; background: var(--danger); }
+.alogoi svg { width: 15px; height: 15px; color: #fff; }
+.alogt { font-size: 15px; font-weight: 700; color: var(--text); font-family: var(--font); }
+.achip { font-size: 9px; font-weight: 700; background: #FEF2F2; color: var(--danger); padding: 2px 6px; border-radius: 4px; border: 1px solid #FECACA; font-family: var(--font); }
+.hmbgr { width: 34px; height: 34px; border-radius: 8px; background: var(--white); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; }
+.hmbgr svg { width: 18px; height: 18px; color: var(--text); }
+
+.btop { height: 52px; display: flex; align-items: center; gap: 10px; padding: 0 16px; flex-shrink: 0; position: sticky; top: 0; z-index: 100; background: var(--white); border-bottom: 1px solid var(--border); }
+.bbtn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: var(--white); display: flex; align-items: center; justify-content: center; }
+.bbtn svg { width: 18px; height: 18px; color: var(--text); }
+.btitle { font-size: 16px; font-weight: 700; color: var(--text); font-family: var(--font); flex: 1; }
+.bact { font-size: 13px; font-weight: 600; color: var(--primary); font-family: var(--font); }
+.bact.red { color: var(--danger); }
+
+/* ─── STAT CARDS ─── */
+.stats2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 16px 14px; }
+.scard { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 14px 12px; }
+.scrow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.sclbl { font-size: 11px; color: var(--muted); font-weight: 500; font-family: var(--font); }
+.scico { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.scnum { font-size: 22px; font-weight: 700; letter-spacing: -0.8px; color: var(--text); font-family: var(--font); }
+.scsub { font-size: 10px; color: var(--muted); margin-top: 2px; font-family: var(--font); }
+.scsub.up { color: var(--success); }
+.scsub.warn { color: var(--warning); }
+
+/* ─── PILLS ─── */
+.pill { font-size: 9.5px; font-weight: 600; padding: 3px 7px; border-radius: 5px; font-family: var(--font); }
+.p-active  { background: #F0FDF4; color: #16A34A; }
+.p-warn    { background: #FFFBEB; color: #D97706; }
+.p-danger  { background: #FEF2F2; color: #EF4444; }
+.p-indigo  { background: #EEF2FF; color: #4F46E5; }
+.p-teal    { background: var(--teal-light); color: var(--primary); }
+
+/* ─── SEARCH ─── */
+.search { display: flex; align-items: center; gap: 8px; background: var(--white); border: 1px solid var(--border); border-radius: 9px; padding: 9px 12px; }
+.search svg { width: 15px; height: 15px; color: var(--muted); flex-shrink: 0; }
+.search span { font-size: 13px; color: var(--muted); font-family: var(--font); }
+
+/* ─── FILTER TABS ─── */
+.ftabs { display: flex; gap: 6px; padding: 0 16px 12px; overflow-x: auto; scrollbar-width: none; }
+.ft { flex-shrink: 0; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 500; color: var(--muted); border: 1.5px solid var(--border); background: var(--white); white-space: nowrap; font-family: var(--font); }
+.ft.act { background: var(--teal-light); border-color: var(--teal); color: var(--primary); font-weight: 600; }
+.ft.act-red { background: #FEF2F2; border-color: #FECACA; color: var(--danger); font-weight: 600; }
+
+/* ─── USER ROWS ─── */
+.ulist { padding: 0 16px; display: flex; flex-direction: column; gap: 7px; }
+.urow { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 12px; display: flex; align-items: center; gap: 10px; }
+.uava { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; flex-shrink: 0; font-family: var(--font); }
+.uname { font-size: 13px; font-weight: 600; color: var(--text); font-family: var(--font); }
+.uemail { font-size: 11px; color: var(--muted); margin-top: 1px; font-family: var(--font); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.uright { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
+.uacts { display: flex; gap: 5px; }
+.uabtn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid; display: flex; align-items: center; justify-content: center; }
+.uabtn svg { width: 13px; height: 13px; }
+.uabtn.edit { color: #2563EB; border-color: #BFDBFE; background: #EFF6FF; }
+.uabtn.del  { color: #EF4444; border-color: #FECACA; background: #FEF2F2; }
+
+/* ─── ROLE BADGE ─── */
+.rbadge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; font-family: var(--font); }
+.rb-admin { background: #FEF2F2; color: #EF4444; border: 1px solid #FECACA; }
+.rb-user  { background: var(--teal-light); color: var(--primary); }
+
+/* ─── FORMS ─── */
+.fwrap { padding: 0 16px; }
+.fg { margin-bottom: 14px; }
+.flbl { display: block; font-size: 12.5px; font-weight: 600; color: var(--text); margin-bottom: 5px; font-family: var(--font); }
+.flbl.opt { color: var(--muted); font-weight: 400; }
+.finput { width: 100%; height: 44px; border: 1.5px solid var(--border); border-radius: 9px; padding: 0 12px; font-size: 14px; color: var(--text); background: var(--white); display: flex; align-items: center; font-family: var(--font); }
+.finput.ph { color: var(--muted); }
+.finput.focused { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(20,184,166,0.1); }
+.fsel { width: 100%; height: 44px; border: 1.5px solid var(--border); border-radius: 9px; padding: 0 12px; font-size: 14px; color: var(--text); background: var(--white); display: flex; align-items: center; justify-content: space-between; font-family: var(--font); }
+.fsel svg { width: 16px; height: 16px; color: var(--muted); }
+.fhint { font-size: 11px; color: var(--muted); margin-top: 4px; font-family: var(--font); }
+.qslider { width: 100%; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+.qfill { height: 100%; border-radius: 3px; }
+.qrow { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); margin-top: 5px; font-family: var(--font); }
+
+/* ─── BUTTONS ─── */
+.btnf { width: 100%; height: 48px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; font-family: var(--font); }
+.btn-p { background: var(--primary); color: #fff; box-shadow: 0 4px 14px rgba(15,118,110,0.3); }
+.btn-r { background: var(--danger); color: #fff; box-shadow: 0 4px 14px rgba(239,68,68,0.3); }
+.btn-g { background: var(--white); border: 1.5px solid var(--border); color: var(--text); }
+
+/* ─── ACTIVITY ─── */
+.actlist { padding: 0 16px; }
+.actitem { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.actitem:last-child { border-bottom: none; }
+.adot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+.atxt { font-size: 12.5px; color: var(--muted); line-height: 1.4; font-family: var(--font); flex: 1; }
+.atxt strong { color: var(--text); font-weight: 600; }
+.atime { font-size: 10.5px; color: var(--muted); flex-shrink: 0; margin-top: 2px; font-family: var(--font); }
+
+/* ─── AUDIT ─── */
+.audititem { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 7px; }
+.auditrow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.aact { font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 5px; font-family: var(--font); }
+.aact.create { background: #F0FDF4; color: #16A34A; }
+.aact.update { background: #EFF6FF; color: #2563EB; }
+.aact.delete { background: #FEF2F2; color: #EF4444; }
+.aact.login  { background: var(--teal-light); color: var(--primary); }
+.atime2 { font-size: 10.5px; color: var(--muted); font-family: var(--font); }
+.adesc { font-size: 12.5px; color: var(--text); font-family: var(--font); line-height: 1.4; }
+.auser { font-size: 11px; color: var(--muted); font-family: var(--font); margin-top: 3px; }
+
+/* ─── DANGER ZONE ─── */
+.dzwrap { margin: 0 16px 20px; border: 1.5px solid #FECACA; border-radius: 12px; padding: 14px; background: #FFF5F5; }
+.dztitle { font-size: 11px; font-weight: 700; color: #B91C1C; margin-bottom: 6px; font-family: var(--font); text-transform: uppercase; letter-spacing: 0.6px; }
+.dzdesc { font-size: 12px; color: var(--muted); margin-bottom: 12px; line-height: 1.4; font-family: var(--font); }
+.dzbtns { display: flex; gap: 8px; }
+.dzbtn { flex: 1; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12.5px; font-weight: 600; font-family: var(--font); }
+.dzbtn.sus { background: #FFFBEB; border: 1.5px solid #FDE68A; color: #D97706; }
+.dzbtn.del { background: #FEF2F2; border: 1.5px solid #FECACA; color: #EF4444; }
+
+/* ─── MODAL ─── */
+.moverlay { position: absolute; inset: 0; background: rgba(0,0,0,0.45); z-index: 500; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.mcard { background: var(--white); border-radius: 18px; padding: 24px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+.mico { width: 52px; height: 52px; border-radius: 50%; background: #FEF2F2; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 24px; }
+.mtitle { font-size: 17px; font-weight: 700; color: var(--text); text-align: center; font-family: var(--font); margin-bottom: 8px; }
+.mbody { font-size: 13px; color: var(--muted); text-align: center; line-height: 1.5; font-family: var(--font); margin-bottom: 20px; }
+.mbody strong { color: var(--text); font-weight: 600; }
+.mbtns { display: flex; flex-direction: column; gap: 8px; }
+
+/* ─── TOGGLE SWITCH ─── */
+.toggle-row { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.toggle-label { font-size: 13px; font-weight: 600; color: var(--text); font-family: var(--font); }
+.toggle-sub { font-size: 11px; color: var(--muted); font-family: var(--font); margin-top: 2px; }
+.toggle-on { width: 42px; height: 24px; background: var(--teal); border-radius: 12px; position: relative; flex-shrink: 0; }
+.toggle-on::after { content: ''; position: absolute; right: 2px; top: 2px; width: 20px; height: 20px; background: white; border-radius: 50%; }
+
+/* ─── DRAWER ─── */
+.drawer-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.4); z-index: 500; display: flex; }
+.drawer { width: 280px; height: 100%; background: var(--dark); display: flex; flex-direction: column; padding-bottom: 50px; }
+.drhdr { display: flex; align-items: center; justify-content: space-between; padding: 16px 16px 14px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.drlogo { display: flex; align-items: center; gap: 8px; }
+.drlogoi { width: 28px; height: 28px; background: var(--danger); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+.drlogoi svg { width: 15px; height: 15px; color: #fff; }
+.drlogt { font-size: 16px; font-weight: 700; color: #F1F5F9; font-family: var(--font); }
+.drclose { width: 30px; height: 30px; border-radius: 7px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; }
+.drclose svg { width: 16px; height: 16px; color: #CBD5E1; }
+.druser { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.drava { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#EF4444,#F97316); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; color: #fff; font-family: var(--font); flex-shrink: 0; }
+.drnav { flex: 1; padding: 10px 8px; overflow-y: auto; }
+.drslbl { font-size: 10px; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.8px; padding: 10px 8px 4px; font-family: var(--font); }
+.dritem { display: flex; align-items: center; gap: 10px; padding: 10px; border-radius: 7px; color: #CBD5E1; font-size: 14px; font-weight: 500; font-family: var(--font); margin-bottom: 1px; }
+.dritem svg { width: 17px; height: 17px; flex-shrink: 0; }
+.dritem.act { background: rgba(239,68,68,0.18); color: #FCA5A5; }
+.drbadge { margin-left: auto; background: var(--danger); color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; font-family: var(--font); }
+
+/* ─── ADD BTN ─── */
+.addbtn { height: 36px; border-radius: 8px; background: var(--danger); color: #fff; display: flex; align-items: center; justify-content: center; gap: 5px; padding: 0 14px; font-size: 13px; font-weight: 600; font-family: var(--font); white-space: nowrap; flex-shrink: 0; }
+.addbtn svg { width: 14px; height: 14px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ SCREEN 1: ADMIN SIGN IN ══════════ -->
+<div class="sw">
+  <div class="slabel">Admin Sign In</div>
+  <div class="iphone">
+    <div class="di"></div><div class="sbl"><span></span><span></span><span></span></div><div class="sbr"></div>
+    <div class="sb on-bg">
+      <span class="st">9:41</span>
+      <div class="si"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2z"/><circle cx="12" cy="19" r="1.5"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg></div>
+    </div>
+    <div class="sfbar">
+      <div class="snb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="snb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="ub"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span><span>docvault.app/admin/login</span></div>
+      <div class="shbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+    </div>
+
+    <div class="pc" style="background:var(--bg);display:flex;align-items:center;justify-content:center">
+      <div style="padding:24px 20px;width:100%">
+        <div style="text-align:center;margin-bottom:24px">
+          <div style="width:52px;height:52px;background:var(--danger);border-radius:14px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:14px;box-shadow:0 8px 24px rgba(239,68,68,0.3)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" style="width:28px;height:28px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <div style="font-size:22px;font-weight:700;color:var(--text);font-family:var(--font);letter-spacing:-0.4px">Admin Portal</div>
+          <div style="font-size:13px;color:var(--muted);margin-top:4px;font-family:var(--font)">DocVault Administrator Access</div>
+        </div>
+
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:16px;padding:20px;box-shadow:0 4px 16px rgba(0,0,0,0.06)">
+          <div style="font-size:16px;font-weight:700;color:var(--text);font-family:var(--font);margin-bottom:4px">Sign in as Admin</div>
+          <div style="font-size:12.5px;color:var(--muted);margin-bottom:20px;font-family:var(--font)">Restricted to authorised personnel only</div>
+
+          <div class="fg">
+            <label class="flbl">Admin Email</label>
+            <div class="finput">admin@docvault.app</div>
+          </div>
+          <div class="fg" style="margin-bottom:8px">
+            <label class="flbl">Password</label>
+            <div class="finput">••••••••••••</div>
+          </div>
+          <div style="text-align:right;font-size:12px;font-weight:600;color:var(--danger);margin-bottom:18px;font-family:var(--font)">Forgot password?</div>
+          <div class="btnf btn-r" style="margin-bottom:10px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:17px;height:17px;margin-right:6px"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Sign In as Administrator
+          </div>
+          <div class="btnf btn-g">Cancel</div>
+        </div>
+
+        <div style="text-align:center;margin-top:16px;font-size:12px;color:var(--muted);font-family:var(--font)">🔒 All access attempts are logged</div>
+      </div>
+    </div>
+
+    <div class="sfbot">
+      <div class="sbb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="sbb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+      <div class="sbb"><div class="tbc">2</div></div>
+    </div>
+    <div class="hb"></div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 2: ADMIN DASHBOARD ══════════ -->
+<div class="sw">
+  <div class="slabel">Admin Dashboard</div>
+  <div class="iphone">
+    <div class="di"></div><div class="sbl"><span></span><span></span><span></span></div><div class="sbr"></div>
+    <div class="sb">
+      <span class="st">9:41</span>
+      <div class="si"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2z"/><circle cx="12" cy="19" r="1.5"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg></div>
+    </div>
+    <div class="sfbar">
+      <div class="snb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="snb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="ub"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span><span>docvault.app/admin</span></div>
+      <div class="shbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+    </div>
+
+    <div class="pc">
+      <div class="atop">
+        <div class="alogo">
+          <div class="alogoi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <span class="alogt">DocVault</span>
+          <span class="achip">ADMIN</span>
+        </div>
+        <div class="hmbgr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+      </div>
+
+      <div style="padding:14px 16px 4px">
+        <div style="font-size:17px;font-weight:700;color:var(--text);font-family:var(--font);letter-spacing:-0.3px">Overview</div>
+        <div style="font-size:12px;color:var(--muted);font-family:var(--font);margin-top:2px">Wednesday, 18 March 2026</div>
+      </div>
+
+      <div class="stats2" style="padding-top:12px">
+        <div class="scard"><div class="scrow"><span class="sclbl">Total Users</span><div class="scico" style="background:#EFF6FF">👥</div></div><div class="scnum">142</div><div class="scsub up">↑ 12 this week</div></div>
+        <div class="scard"><div class="scrow"><span class="sclbl">Storage Used</span><div class="scico" style="background:#F0FDF4">💾</div></div><div class="scnum">284 GB</div><div class="scsub">of 500 GB · 57%</div></div>
+        <div class="scard"><div class="scrow"><span class="sclbl">Active Today</span><div class="scico" style="background:#FFFBEB">⚡</div></div><div class="scnum">38</div><div class="scsub up">↑ 5 vs yesterday</div></div>
+        <div class="scard"><div class="scrow"><span class="sclbl">Docs Uploaded</span><div class="scico" style="background:#F5F3FF">📄</div></div><div class="scnum">1,847</div><div class="scsub">Total documents</div></div>
+      </div>
+
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 16px 10px">
+        <div style="font-size:14px;font-weight:700;color:var(--text);font-family:var(--font)">Recent Activity</div>
+        <div style="font-size:12px;font-weight:600;color:var(--primary);font-family:var(--font)">View all →</div>
+      </div>
+      <div class="actlist">
+        <div class="actitem"><div class="adot" style="background:#16A34A"></div><div class="atxt"><strong>James M.</strong> uploaded 3 new documents</div><div class="atime">2m ago</div></div>
+        <div class="actitem"><div class="adot" style="background:#2563EB"></div><div class="atxt"><strong>Admin</strong> updated storage quota for Sarah R. → 10 GB</div><div class="atime">14m</div></div>
+        <div class="actitem"><div class="adot" style="background:#EF4444"></div><div class="atxt"><strong>Admin</strong> suspended user Kevin L.</div><div class="atime">1h</div></div>
+        <div class="actitem"><div class="adot" style="background:#14B8A6"></div><div class="atxt"><strong>Priya S.</strong> signed in from new device</div><div class="atime">2h</div></div>
+        <div class="actitem"><div class="adot" style="background:#16A34A"></div><div class="atxt"><strong>Admin</strong> created new user Marco D.</div><div class="atime">3h</div></div>
+      </div>
+
+      <div style="padding:16px 16px 10px;font-size:14px;font-weight:700;color:var(--text);font-family:var(--font)">Storage Overview</div>
+      <div style="margin:0 16px 16px;background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px">
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-family:var(--font);margin-bottom:8px"><span>284 GB used</span><span>216 GB free</span></div>
+        <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden"><div style="width:57%;height:100%;background:linear-gradient(90deg,#0F766E,#14B8A6);border-radius:4px"></div></div>
+        <div style="display:flex;gap:0;margin-top:12px;border-top:1px solid var(--border);padding-top:12px">
+          <div style="flex:1;text-align:center"><div style="font-size:14px;font-weight:700;color:var(--text);font-family:var(--font)">142</div><div style="font-size:10px;color:var(--muted);font-family:var(--font)">Active users</div></div>
+          <div style="width:1px;background:var(--border)"></div>
+          <div style="flex:1;text-align:center"><div style="font-size:14px;font-weight:700;color:var(--warning);font-family:var(--font)">8</div><div style="font-size:10px;color:var(--muted);font-family:var(--font)">Near limit</div></div>
+          <div style="width:1px;background:var(--border)"></div>
+          <div style="flex:1;text-align:center"><div style="font-size:14px;font-weight:700;color:var(--danger);font-family:var(--font)">3</div><div style="font-size:10px;color:var(--muted);font-family:var(--font)">Suspended</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sfbot">
+      <div class="sbb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="sbb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+      <div class="sbb"><div class="tbc">2</div></div>
+    </div>
+    <div class="hb"></div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 3: USERS LIST (READ) ══════════ -->
+<div class="sw">
+  <div class="slabel">Users List</div>
+  <div class="iphone">
+    <div class="di"></div><div class="sbl"><span></span><span></span><span></span></div><div class="sbr"></div>
+    <div class="sb"><span class="st">9:41</span><div class="si"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2z"/><circle cx="12" cy="19" r="1.5"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg></div></div>
+    <div class="sfbar">
+      <div class="snb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="snb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="ub"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span><span>docvault.app/admin/users</span></div>
+      <div class="shbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+    </div>
+
+    <div class="pc">
+      <div class="atop">
+        <div class="alogo"><div class="alogoi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><span class="alogt">User Management</span></div>
+        <div class="hmbgr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;padding:12px 16px 8px">
+        <div class="search" style="flex:1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Search users...</span></div>
+        <div class="addbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add User</div>
+      </div>
+      <div class="ftabs">
+        <div class="ft act">All (142)</div><div class="ft">Active (138)</div><div class="ft">Admins (4)</div><div class="ft">Suspended (3)</div><div class="ft">Near Limit (8)</div>
+      </div>
+      <div style="padding:0 16px 10px;font-size:11px;color:var(--muted);font-family:var(--font)">142 users · Sorted by last active</div>
+      <div class="ulist">
+        <div class="urow"><div class="uava" style="background:linear-gradient(135deg,#EF4444,#F97316)">SA</div><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><div class="uname">Super Admin</div><span class="rbadge rb-admin">Admin</span></div><div class="uemail">admin@docvault.app</div></div><div class="uright"><div class="pill p-active">Active</div><div class="uacts"><div class="uabtn edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg></div></div></div></div>
+        <div class="urow"><div class="uava" style="background:linear-gradient(135deg,#0F766E,#14B8A6)">AT</div><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><div class="uname">Angelica T.</div><span class="rbadge rb-user">User</span></div><div class="uemail">angelica@example.com</div></div><div class="uright"><div class="pill p-active">Active</div><div class="uacts"><div class="uabtn edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg></div><div class="uabtn del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></div></div></div></div>
+        <div class="urow"><div class="uava" style="background:linear-gradient(135deg,#2563EB,#60A5FA)">JM</div><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><div class="uname">James M.</div><span class="rbadge rb-user">User</span></div><div class="uemail">james@example.com</div></div><div class="uright"><div class="pill p-active">Active</div><div class="uacts"><div class="uabtn edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg></div><div class="uabtn del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></div></div></div></div>
+        <div class="urow"><div class="uava" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">SR</div><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><div class="uname">Sarah R.</div><span class="rbadge rb-user">User</span></div><div class="uemail">sarah@example.com</div></div><div class="uright"><div class="pill p-warn">Near Limit</div><div class="uacts"><div class="uabtn edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg></div><div class="uabtn del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></div></div></div></div>
+        <div class="urow"><div class="uava" style="background:linear-gradient(135deg,#D97706,#FBBF24)">KL</div><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><div class="uname">Kevin L.</div><span class="rbadge rb-user">User</span></div><div class="uemail">kevin@example.com</div></div><div class="uright"><div class="pill p-danger">Suspended</div><div class="uacts"><div class="uabtn edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg></div><div class="uabtn del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></div></div></div></div>
+        <div class="urow"><div class="uava" style="background:linear-gradient(135deg,#0891B2,#22D3EE)">PS</div><div style="flex:1;min-width:0"><div style="display:flex;align-items:center;gap:6px"><div class="uname">Priya S.</div><span class="rbadge rb-user">User</span></div><div class="uemail">priya@example.com</div></div><div class="uright"><div class="pill p-active">Active</div><div class="uacts"><div class="uabtn edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4z"/></svg></div><div class="uabtn del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg></div></div></div></div>
+      </div>
+    </div>
+
+    <div class="sfbot">
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="sbb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+      <div class="sbb"><div class="tbc">2</div></div>
+    </div>
+    <div class="hb"></div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 4: ADD USER (CREATE) ══════════ -->
+<div class="sw">
+  <div class="slabel">Add User (Create)</div>
+  <div class="iphone">
+    <div class="di"></div><div class="sbl"><span></span><span></span><span></span></div><div class="sbr"></div>
+    <div class="sb"><span class="st">9:41</span><div class="si"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2z"/><circle cx="12" cy="19" r="1.5"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg></div></div>
+    <div class="sfbar">
+      <div class="snb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="snb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="ub"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span><span>docvault.app/admin/users/new</span></div>
+      <div class="shbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+    </div>
+    <div class="pc">
+      <div class="btop">
+        <div class="bbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+        <div class="btitle">Add New User</div>
+        <div class="bact red">Cancel</div>
+      </div>
+      <div style="padding-top:16px">
+        <div style="display:flex;flex-direction:column;align-items:center;padding:12px 0 20px">
+          <div style="width:64px;height:64px;border-radius:50%;background:var(--bg);border:2px dashed var(--border);display:flex;align-items:center;justify-content:center;margin-bottom:8px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" style="width:26px;height:26px"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <div style="font-size:12px;font-weight:600;color:var(--primary);font-family:var(--font)">Upload photo (optional)</div>
+        </div>
+        <div class="fwrap">
+          <div class="fg"><label class="flbl">Full Name *</label><div class="finput focused">Marco Di Luca</div></div>
+          <div class="fg"><label class="flbl">Email Address *</label><div class="finput">marco@example.com</div></div>
+          <div class="fg"><label class="flbl">Role *</label><div class="fsel"><span>User</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+          <div class="fg"><label class="flbl">Storage Quota</label><div class="fsel"><span>5 GB (Default)</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+          <div class="fg"><label class="flbl">Initial Password</label><div class="finput ph">Auto-generate & email to user</div><div class="fhint">User will be prompted to change on first login</div></div>
+          <div class="toggle-row">
+            <div><div class="toggle-label">Send Welcome Email</div><div class="toggle-sub">Send login instructions to user</div></div>
+            <div class="toggle-on"></div>
+          </div>
+          <div class="btnf btn-r" style="margin-bottom:10px">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:16px;height:16px;margin-right:6px"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+            Create User
+          </div>
+          <div class="btnf btn-g">Cancel</div>
+        </div>
+      </div>
+    </div>
+    <div class="sfbot">
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="sbb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+      <div class="sbb"><div class="tbc">2</div></div>
+    </div>
+    <div class="hb"></div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 5: EDIT USER (UPDATE) ══════════ -->
+<div class="sw">
+  <div class="slabel">Edit User (Update)</div>
+  <div class="iphone">
+    <div class="di"></div><div class="sbl"><span></span><span></span><span></span></div><div class="sbr"></div>
+    <div class="sb"><span class="st">9:41</span><div class="si"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2z"/><circle cx="12" cy="19" r="1.5"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg></div></div>
+    <div class="sfbar">
+      <div class="snb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="snb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="ub"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span><span>docvault.app/admin/users/edit</span></div>
+      <div class="shbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+    </div>
+    <div class="pc">
+      <div class="btop">
+        <div class="bbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+        <div class="btitle">Edit User</div>
+        <div class="bact">Save</div>
+      </div>
+      <div style="background:var(--white);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;gap:12px">
+        <div class="uava" style="background:linear-gradient(135deg,#7C3AED,#A78BFA);width:44px;height:44px;font-size:15px">SR</div>
+        <div style="flex:1"><div style="font-size:15px;font-weight:700;color:var(--text);font-family:var(--font)">Sarah R.</div><div style="font-size:12px;color:var(--muted);font-family:var(--font)">sarah@example.com · Joined Jan 2025</div></div>
+        <div><span class="pill p-warn">Near Limit</span></div>
+      </div>
+      <div style="padding:16px 0 0">
+        <div class="fwrap">
+          <div class="fg"><label class="flbl">Full Name</label><div class="finput">Sarah Richardson</div></div>
+          <div class="fg"><label class="flbl">Email Address</label><div class="finput">sarah@example.com</div></div>
+          <div class="fg"><label class="flbl">Role</label><div class="fsel"><span>User</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+          <div class="fg"><label class="flbl">Status</label><div class="fsel"><span>Active</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div></div>
+          <div class="fg">
+            <label class="flbl">Storage Quota — <span style="color:var(--warning)">4.8 / 5 GB used</span></label>
+            <div class="fsel"><span>5 GB</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+            <div class="qslider"><div class="qfill" style="width:96%;background:linear-gradient(90deg,#D97706,#F59E0B)"></div></div>
+            <div class="qrow"><span>4.8 GB used</span><span>200 MB free</span></div>
+          </div>
+        </div>
+        <div style="padding:0 16px 14px;display:flex;gap:8px">
+          <div class="btnf btn-p" style="flex:1;font-size:14px">Save Changes</div>
+          <div class="btnf btn-g" style="flex:1;font-size:14px">Cancel</div>
+        </div>
+        <div class="dzwrap">
+          <div class="dztitle">⚠ Danger Zone</div>
+          <div class="dzdesc">These actions affect this user's account and cannot be easily undone.</div>
+          <div class="dzbtns">
+            <div class="dzbtn sus">Suspend User</div>
+            <div class="dzbtn del">Delete Account</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sfbot">
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="sbb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+      <div class="sbb"><div class="tbc">2</div></div>
+    </div>
+    <div class="hb"></div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 6: DELETE CONFIRMATION ══════════ -->
+<div class="sw">
+  <div class="slabel">Delete Confirmation</div>
+  <div class="iphone">
+    <div class="di"></div><div class="sbl"><span></span><span></span><span></span></div><div class="sbr"></div>
+    <div class="sb"><span class="st">9:41</span><div class="si"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2z"/><circle cx="12" cy="19" r="1.5"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg></div></div>
+    <div class="sfbar">
+      <div class="snb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="snb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="ub"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span><span>docvault.app/admin/users</span></div>
+      <div class="shbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+    </div>
+    <div class="pc" style="position:relative">
+      <div class="atop"><div class="alogo"><div class="alogoi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><span class="alogt">User Management</span></div><div class="hmbgr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div>
+      <div style="padding:10px 16px 8px;font-size:11px;color:var(--muted);font-family:var(--font)">142 users</div>
+      <div class="ulist" style="opacity:0.3">
+        <div class="urow"><div class="uava" style="background:linear-gradient(135deg,#0F766E,#14B8A6)">AT</div><div style="flex:1"><div class="uname">Angelica T.</div><div class="uemail">angelica@example.com</div></div><div class="pill p-active">Active</div></div>
+        <div class="urow"><div class="uava" style="background:linear-gradient(135deg,#2563EB,#60A5FA)">JM</div><div style="flex:1"><div class="uname">James M.</div><div class="uemail">james@example.com</div></div><div class="pill p-active">Active</div></div>
+        <div class="urow"><div class="uava" style="background:linear-gradient(135deg,#D97706,#FBBF24)">KL</div><div style="flex:1"><div class="uname">Kevin L.</div><div class="uemail">kevin@example.com</div></div><div class="pill p-danger">Suspended</div></div>
+      </div>
+      <div class="moverlay">
+        <div class="mcard">
+          <div class="mico">🗑️</div>
+          <div class="mtitle">Delete User Account?</div>
+          <div class="mbody">You are about to permanently delete <strong>Kevin L.</strong>'s account including all <strong>12 documents</strong> and <strong>0.4 GB</strong> of data.<br><br>This action <strong>cannot be undone</strong>.</div>
+          <div class="mbtns">
+            <div class="btnf btn-r">Yes, Delete Account</div>
+            <div class="btnf btn-g" style="margin-top:6px">Cancel</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sfbot">
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="sbb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+      <div class="sbb"><div class="tbc">2</div></div>
+    </div>
+    <div class="hb"></div>
+  </div>
+</div>
+
+<!-- ══════════ SCREEN 7: AUDIT LOGS ══════════ -->
+<div class="sw">
+  <div class="slabel">Audit Logs</div>
+  <div class="iphone">
+    <div class="di"></div><div class="sbl"><span></span><span></span><span></span></div><div class="sbr"></div>
+    <div class="sb"><span class="st">9:41</span><div class="si"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2z"/><circle cx="12" cy="19" r="1.5"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg></div></div>
+    <div class="sfbar">
+      <div class="snb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="snb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="ub"><span class="li"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></span><span>docvault.app/admin/audit</span></div>
+      <div class="shbtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+    </div>
+    <div class="pc">
+      <div class="atop"><div class="alogo"><div class="alogoi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><span class="alogt">Audit Logs</span></div><div class="hmbgr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></div></div>
+      <div style="display:flex;gap:8px;padding:12px 16px 8px">
+        <div class="search" style="flex:1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg><span>Search logs...</span></div>
+        <div style="width:36px;height:36px;border-radius:8px;background:var(--white);border:1px solid var(--border);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--muted)"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg></div>
+      </div>
+      <div class="ftabs">
+        <div class="ft act">All</div><div class="ft">Create</div><div class="ft">Update</div><div class="ft act-red">Delete</div><div class="ft">Login</div>
+      </div>
+      <div style="padding:0 16px">
+        <div class="audititem"><div class="auditrow"><span class="aact delete">DELETE</span><span class="atime2">2 min ago</span></div><div class="adesc">User account <strong>Kevin L.</strong> was permanently deleted</div><div class="auser">By: admin@docvault.app · IP 192.168.1.5</div></div>
+        <div class="audititem"><div class="auditrow"><span class="aact update">UPDATE</span><span class="atime2">14 min ago</span></div><div class="adesc">Storage quota for <strong>Sarah R.</strong> changed from 5 GB → 10 GB</div><div class="auser">By: admin@docvault.app · IP 192.168.1.5</div></div>
+        <div class="audititem"><div class="auditrow"><span class="aact update">UPDATE</span><span class="atime2">1h ago</span></div><div class="adesc">User <strong>Kevin L.</strong> status changed to Suspended</div><div class="auser">By: admin@docvault.app · IP 192.168.1.5</div></div>
+        <div class="audititem"><div class="auditrow"><span class="aact login">LOGIN</span><span class="atime2">2h ago</span></div><div class="adesc"><strong>Priya S.</strong> signed in from new device (iPhone, Sydney)</div><div class="auser">User session · IP 203.56.12.4</div></div>
+        <div class="audititem"><div class="auditrow"><span class="aact create">CREATE</span><span class="atime2">3h ago</span></div><div class="adesc">New user <strong>Marco Di Luca</strong> created, welcome email sent</div><div class="auser">By: admin@docvault.app · IP 192.168.1.5</div></div>
+        <div class="audititem"><div class="auditrow"><span class="aact login">LOGIN</span><span class="atime2">4h ago</span></div><div class="adesc"><strong>Admin</strong> signed in to admin portal</div><div class="auser">Admin session · IP 192.168.1.5</div></div>
+      </div>
+    </div>
+    <div class="sfbot">
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="sbb off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg></div>
+      <div class="sbb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></div>
+      <div class="sbb"><div class="tbc">2</div></div>
+    </div>
+    <div class="hb"></div>
+  </div>
+</div>
+
+</body>
+</html>

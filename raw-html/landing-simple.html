@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudDoc — Simple Landing</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #ffffff;
+      color: #1a1a2e;
+      width: 1440px;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 80px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; }
+    .logo-box {
+      width: 32px; height: 32px;
+      background: #1a7a6e; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-box svg { width: 17px; height: 17px; fill: white; }
+    .logo-name { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .btn-signin {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 16px;
+      border: 1.5px solid #e8e8e8; border-radius: 8px;
+      font-size: 13px; font-weight: 600; color: #444;
+      text-decoration: none;
+    }
+    .btn-signin svg { width: 14px; height: 14px; stroke: #666; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-cta {
+      padding: 8px 18px;
+      background: #1a7a6e; color: white;
+      border-radius: 8px; font-size: 13px; font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* HERO — centered, minimal */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 100px 80px 80px;
+      background: #f9fefe;
+    }
+    .hero-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #e6f5f3; color: #1a7a6e;
+      font-size: 12px; font-weight: 600;
+      padding: 5px 14px; border-radius: 100px;
+      margin-bottom: 28px;
+    }
+    .hero-pill-dot { width: 6px; height: 6px; background: #1a7a6e; border-radius: 50%; }
+    .hero h1 {
+      font-size: 64px; font-weight: 800;
+      line-height: 1.05; letter-spacing: -2px;
+      color: #1a1a2e; max-width: 720px;
+      margin-bottom: 20px;
+    }
+    .hero h1 span { color: #1a7a6e; }
+    .hero p {
+      font-size: 17px; color: #777;
+      max-width: 480px; line-height: 1.65;
+      margin-bottom: 40px;
+    }
+    .hero-btns { display: flex; gap: 12px; margin-bottom: 16px; }
+    .btn-big {
+      padding: 14px 28px;
+      background: #1a7a6e; color: white;
+      border-radius: 10px; font-size: 15px; font-weight: 600;
+      text-decoration: none;
+    }
+    .btn-big-ghost {
+      padding: 14px 28px;
+      background: white; color: #333;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px; font-size: 15px; font-weight: 600;
+      text-decoration: none;
+    }
+    .hero-sub { font-size: 12px; color: #bbb; }
+
+    /* FEATURES — 3 icon cards, centered */
+    .features {
+      padding: 80px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .features h2 {
+      font-size: 32px; font-weight: 800;
+      letter-spacing: -0.6px; color: #1a1a2e;
+      margin-bottom: 8px; text-align: center;
+    }
+    .features-sub { font-size: 15px; color: #999; margin-bottom: 48px; text-align: center; }
+    .cards { display: flex; gap: 20px; width: 100%; max-width: 900px; }
+    .card {
+      flex: 1;
+      background: #f9f9f9;
+      border: 1px solid #efefef;
+      border-radius: 14px;
+      padding: 32px 24px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 14px;
+    }
+    .card-icon {
+      width: 46px; height: 46px;
+      background: #e6f5f3; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .card-icon svg { width: 22px; height: 22px; stroke: #1a7a6e; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .card h3 { font-size: 15px; font-weight: 700; color: #1a1a2e; }
+    .card p { font-size: 13px; color: #888; line-height: 1.6; }
+
+    /* CTA STRIP */
+    .cta-strip {
+      margin: 0 80px 80px;
+      background: #1a1a2e;
+      border-radius: 16px;
+      padding: 56px 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .cta-strip-left h2 {
+      font-size: 30px; font-weight: 800;
+      letter-spacing: -0.6px; color: white;
+      margin-bottom: 8px;
+    }
+    .cta-strip-left p { font-size: 14px; color: #666; }
+    .btn-cta-white {
+      padding: 12px 24px;
+      background: #1a7a6e; color: white;
+      border-radius: 9px; font-size: 14px; font-weight: 600;
+      text-decoration: none; white-space: nowrap;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 22px 80px;
+      border-top: 1px solid #f0f0f0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 8px; }
+    .footer-logo-box { width: 22px; height: 22px; background: #1a7a6e; border-radius: 5px; }
+    .footer-logo-text { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+    .footer-copy { font-size: 12px; color: #ccc; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: 12px; color: #ccc; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="logo">
+      <div class="logo-box">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8" style="fill:rgba(255,255,255,0.3)"/></svg>
+      </div>
+      <span class="logo-name">CloudDoc</span>
+    </div>
+    <div class="nav-right">
+      <a href="#" class="btn-signin">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Sign in
+      </a>
+      <a href="#" class="btn-cta">Get started free</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-pill"><span class="hero-pill-dot"></span> Free 5 GB · No credit card needed</div>
+    <h1>Your documents,<br><span>safe and organised</span></h1>
+    <p>Upload, organise, and access all your important files from any device — securely and effortlessly.</p>
+    <div class="hero-btns">
+      <a href="#" class="btn-big">Create free account</a>
+      <a href="#" class="btn-big-ghost">Sign in →</a>
+    </div>
+    <span class="hero-sub">PDF · DOCX · JPG · PNG · XLSX &nbsp;·&nbsp; Max 50 MB per file</span>
+  </section>
+
+  <section class="features">
+    <h2>Everything you need</h2>
+    <p class="features-sub">Simple, focused, and built for personal use.</p>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        </div>
+        <h3>Upload & Store</h3>
+        <p>Drag and drop files or choose from your device. Up to 50 MB per file, 5 GB total free storage.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>Folders & Tags</h3>
+        <p>Organise documents into folders and tag them by category so you can always find what you need.</p>
+      </div>
+      <div class="card">
+        <div class="card-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <h3>Secure Access</h3>
+        <p>Your files are protected behind authentication. Access from any device, any time.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-strip">
+    <div class="cta-strip-left">
+      <h2>Ready to get started?</h2>
+      <p>Free forever. No credit card required.</p>
+    </div>
+    <a href="#" class="btn-cta-white">Create your free account →</a>
+  </div>
+
+  <footer>
+    <div class="footer-logo">
+      <div class="footer-logo-box"></div>
+      <span class="footer-logo-text">CloudDoc</span>
+    </div>
+    <span class="footer-copy">© 2026 CloudDoc. All rights reserved.</span>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>

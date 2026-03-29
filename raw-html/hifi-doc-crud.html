@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudDoc — Hi-Fi Document CRUD Screens</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary:        #0F766E;
+      --primary-teal:   #14B8A6;
+      --primary-light:  #CCFBF1;
+      --bg:             #F8FAFC;
+      --card:           #FFFFFF;
+      --sidebar:        #1E293B;
+      --text-primary:   #1E293B;
+      --text-muted:     #64748B;
+      --border:         #E2E8F0;
+      --slate-100:      #F1F5F9;
+      --slate-200:      #E2E8F0;
+      --slate-400:      #94A3B8;
+      --slate-500:      #64748B;
+      --sidebar-text:   #CBD5E1;
+      --sidebar-muted:  #94A3B8;
+      --success:        #16A34A;
+      --success-bg:     #F0FDF4;
+      --warning:        #D97706;
+      --warning-bg:     #FFFBEB;
+      --danger:         #EF4444;
+      --danger-bg:      #FEF2F2;
+      --danger-border:  #FECACA;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #E2E8F0;
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+    }
+
+    .screen-label {
+      font-size: 12px; font-weight: 700; color: #475569;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+
+    /* ═══════════════════════════════════════
+       SHARED SIDEBAR
+    ═══════════════════════════════════════ */
+    .sidebar {
+      width: 210px; min-width: 210px;
+      background: var(--sidebar);
+      display: flex; flex-direction: column;
+      height: 100%;
+    }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 10px;
+      padding: 20px 16px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--primary-teal);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 18px; height: 18px; }
+    .logo-text { font-size: 16px; font-weight: 700; color: #F1F5F9; letter-spacing: -0.2px; }
+    .sidebar-nav { flex: 1; padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+    .nav-section-label {
+      font-size: 10px; font-weight: 600; color: var(--sidebar-muted);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 8px 8px 4px; margin-top: 6px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; border-radius: 6px;
+      color: var(--sidebar-text); font-size: 13.5px; font-weight: 500;
+    }
+    .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.85; }
+    .nav-item.active { background: rgba(20,184,166,0.18); color: #5EEAD4; }
+    .nav-item.active svg { opacity: 1; }
+    .nav-badge {
+      margin-left: auto; background: var(--warning);
+      color: #fff; font-size: 10px; font-weight: 700;
+      border-radius: 10px; padding: 1px 6px;
+    }
+    .sidebar-storage { padding: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .storage-label { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .storage-label span:first-child { font-size: 12px; font-weight: 500; color: #CBD5E1; }
+    .storage-label span:last-child  { font-size: 11px; color: #94A3B8; }
+    .storage-bar { height: 5px; background: rgba(255,255,255,0.12); border-radius: 99px; overflow: hidden; }
+    .storage-bar-fill { height: 100%; width: 38%; background: var(--primary-teal); border-radius: 99px; }
+    .storage-sub { margin-top: 5px; font-size: 11px; color: #94A3B8; }
+    .sidebar-user {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg,#0F766E,#14B8A6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    .user-name { font-size: 13px; font-weight: 600; color: #F1F5F9; }
+    .user-role { font-size: 11px; color: #94A3B8; }
+
+    /* ═══════════════════════════════════════
+       SHARED TOPBAR
+    ═══════════════════════════════════════ */
+    .topbar {
+      height: 52px; background: var(--card);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center;
+      padding: 0 20px; gap: 12px; flex-shrink: 0;
+    }
+    .topbar-title { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+    .topbar-search { flex: 1; max-width: 400px; margin-left: 8px; position: relative; }
+    .topbar-search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--slate-400); }
+    .topbar-search input {
+      width: 100%; height: 34px;
+      background: var(--slate-100); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0 10px 0 32px;
+      font-size: 13px; color: var(--text-primary);
+      outline: none; font-family: inherit;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 0 14px; height: 34px; border-radius: 6px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      border: none; font-family: inherit; white-space: nowrap;
+    }
+    .btn svg { width: 14px; height: 14px; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-ghost  { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .icon-btn {
+      width: 34px; height: 34px; border-radius: 6px;
+      border: 1px solid var(--border); background: var(--card);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-muted); flex-shrink: 0;
+    }
+    .icon-btn svg { width: 16px; height: 16px; }
+
+    /* ═══════════════════════════════════════
+       CONTENT / TABLE
+    ═══════════════════════════════════════ */
+    .content { flex: 1; overflow-y: auto; padding: 18px 24px; }
+    .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .filter-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 5px 14px; border-radius: 99px;
+      font-size: 12.5px; font-weight: 500; cursor: pointer;
+      border: 1.5px solid var(--border); background: var(--card);
+      color: var(--text-muted);
+    }
+    .filter-pill.active {
+      background: var(--primary-light); border-color: var(--primary-teal);
+      color: var(--primary); font-weight: 700;
+    }
+    .table-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    thead th {
+      background: var(--slate-100); border-bottom: 1px solid var(--border);
+      text-align: left; padding: 9px 12px;
+      font-size: 11px; font-weight: 600; color: var(--slate-500);
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    tbody td {
+      padding: 11px 12px; border-bottom: 1px solid var(--border);
+      font-size: 13px; color: var(--text-primary); vertical-align: middle;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr.active-row td { background: #F0FDFA; }
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 99px;
+      font-size: 11px; font-weight: 600;
+    }
+    .badge-valid   { background: var(--success-bg); color: var(--success); }
+    .badge-expiring { background: var(--warning-bg); color: var(--warning); }
+    .badge-expired { background: var(--danger-bg);   color: var(--danger); }
+    .badge-stored  { background: var(--slate-100);   color: var(--slate-500); }
+    .cat-tag {
+      display: inline-flex; align-items: center;
+      padding: 2px 8px; border-radius: 4px;
+      font-size: 11px; font-weight: 500;
+      background: var(--slate-100); color: var(--slate-500);
+    }
+    .file-icon-cell {
+      width: 32px; height: 38px;
+      border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 800;
+      flex-shrink: 0;
+    }
+    .fi-pdf { background: #FEF2F2; color: #EF4444; border: 1px solid #FECACA; }
+    .fi-doc { background: #EFF6FF; color: #3B82F6; border: 1px solid #BFDBFE; }
+    .fi-xls { background: #F0FDF4; color: #16A34A; border: 1px solid #BBF7D0; }
+    .fi-png { background: #FDF4FF; color: #A855F7; border: 1px solid #E9D5FF; }
+    .row-actions { display: flex; gap: 4px; align-items: center; }
+    .row-btn {
+      width: 28px; height: 28px; border-radius: 5px;
+      border: 1px solid var(--border); background: var(--card);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-muted);
+    }
+    .row-btn svg { width: 13px; height: 13px; }
+    .row-btn.edit-active  { background: var(--primary-light); border-color: var(--primary-teal); color: var(--primary); }
+    .row-btn.del-active   { background: var(--danger-bg);     border-color: var(--danger-border); color: var(--danger); }
+
+    /* ═══════════════════════════════════════
+       MODAL OVERLAY
+    ═══════════════════════════════════════ */
+    .overlay {
+      position: absolute; inset: 0;
+      background: rgba(15,23,42,0.55);
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(2px);
+      z-index: 10;
+    }
+    .modal {
+      background: var(--card); border-radius: 14px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.22), 0 4px 16px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-header-left { display: flex; align-items: center; gap: 10px; }
+    .modal-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal-icon svg { width: 17px; height: 17px; }
+    .modal-icon.edit  { background: var(--primary-light); color: var(--primary); }
+    .modal-icon.del   { background: var(--danger-bg);     color: var(--danger); }
+    .modal-title { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+    .modal-subtitle { font-size: 12px; color: var(--text-muted); margin-top: 1px; }
+    .close-x {
+      width: 30px; height: 30px; border-radius: 7px;
+      border: 1px solid var(--border); background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--text-muted);
+    }
+    .close-x svg { width: 14px; height: 14px; }
+    .modal-body { padding: 18px 22px; display: flex; flex-direction: column; gap: 14px; }
+    .modal-footer {
+      display: flex; align-items: center; justify-content: flex-end;
+      gap: 8px; padding: 14px 22px 18px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ═══════════════════════════════════════
+       FORM ELEMENTS
+    ═══════════════════════════════════════ */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-label { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+    .form-label .opt { font-weight: 400; color: var(--slate-400); }
+    .form-input, .form-select {
+      height: 38px; border: 1.5px solid var(--border);
+      border-radius: 7px; padding: 0 11px;
+      font-size: 13px; color: var(--text-primary);
+      background: var(--card); font-family: inherit;
+      outline: none; transition: border 0.15s;
+    }
+    .form-input:focus, .form-select:focus { border-color: var(--primary-teal); box-shadow: 0 0 0 3px rgba(20,184,166,0.12); }
+    .form-input.filled  { border-color: var(--slate-200); }
+    .form-select {
+      appearance: none; cursor: pointer; padding-right: 30px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 10px center;
+    }
+    .form-textarea {
+      min-height: 68px; border: 1.5px solid var(--border);
+      border-radius: 7px; padding: 9px 11px;
+      font-size: 13px; color: var(--text-muted);
+      background: var(--card); font-family: inherit;
+      outline: none; resize: none;
+    }
+    .form-textarea:focus { border-color: var(--primary-teal); }
+
+    /* File preview in modal */
+    .file-preview {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px;
+      background: var(--slate-100); border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .fp-icon {
+      width: 36px; height: 42px; border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 800; flex-shrink: 0;
+    }
+    .fp-info { flex: 1; min-width: 0; }
+    .fp-name { font-size: 13px; font-weight: 600; color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .fp-meta { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* Tag pills */
+    .tag-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag-pill {
+      padding: 4px 12px; border-radius: 99px;
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: var(--slate-100); color: var(--text-muted);
+    }
+    .tag-pill.on {
+      background: var(--primary-light); border-color: var(--primary-teal);
+      color: var(--primary); font-weight: 600;
+    }
+    .tag-pill.add {
+      border-style: dashed; color: var(--slate-400);
+    }
+
+    /* Danger zone */
+    .danger-zone {
+      background: var(--danger-bg); border: 1px solid var(--danger-border);
+      border-radius: 10px; padding: 18px; text-align: center;
+    }
+    .danger-zone-icon {
+      width: 48px; height: 48px; background: #FEE2E2;
+      border-radius: 50%; margin: 0 auto 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .danger-zone-icon svg { width: 22px; height: 22px; color: var(--danger); }
+    .danger-zone h3 { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+    .danger-zone p  { font-size: 12px; color: var(--text-muted); line-height: 1.55; }
+
+    .info-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 12px; background: var(--slate-100);
+      border-radius: 6px; font-size: 12px;
+    }
+    .info-row span:first-child { color: var(--text-muted); }
+    .info-row span:last-child  { font-weight: 600; color: var(--text-primary); }
+
+    .check-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 12.5px; color: var(--text-muted); line-height: 1.5;
+    }
+    .check-box {
+      width: 16px; height: 16px; border: 1.5px solid var(--border);
+      border-radius: 4px; flex-shrink: 0; margin-top: 2px;
+      background: var(--card);
+    }
+
+    /* ═══════════════════════════════════════
+       WEB SCREEN SHELL
+    ═══════════════════════════════════════ */
+    .web-screen {
+      width: 1440px; height: 780px;
+      display: flex; border-radius: 8px;
+      overflow: hidden; position: relative;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    }
+    .web-main { flex: 1; display: flex; flex-direction: column; background: var(--bg); overflow: hidden; }
+    .web-main.dim { opacity: 0.3; pointer-events: none; }
+
+    /* ═══════════════════════════════════════
+       MOBILE SCREEN SHELL
+    ═══════════════════════════════════════ */
+    .mobile-screen {
+      width: 390px; border-radius: 36px;
+      overflow: hidden; position: relative;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+      background: var(--bg);
+    }
+    .status-bar {
+      height: 48px; background: var(--card);
+      display: flex; align-items: center;
+      padding: 12px 20px 0;
+      justify-content: space-between;
+      font-size: 13px; font-weight: 600; color: var(--text-primary);
+    }
+    .m-topbar {
+      height: 52px; background: var(--card);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; padding: 0 16px; gap: 10px;
+    }
+    .m-topbar-title { font-size: 15px; font-weight: 700; color: var(--text-primary); flex: 1; }
+    .m-icon-btn {
+      width: 32px; height: 32px; border-radius: 7px;
+      border: 1px solid var(--border); background: var(--card);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+    }
+    .m-icon-btn svg { width: 15px; height: 15px; }
+    .m-content { padding: 12px 16px; }
+    .m-filter-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; margin-bottom: 10px; }
+    .m-pill {
+      padding: 5px 14px; border-radius: 99px;
+      font-size: 12px; font-weight: 500; white-space: nowrap;
+      border: 1.5px solid var(--border); background: var(--card); color: var(--text-muted);
+    }
+    .m-pill.active {
+      background: var(--primary-light); border-color: var(--primary-teal);
+      color: var(--primary); font-weight: 700;
+    }
+    .m-doc-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 0; border-bottom: 1px solid var(--border);
+    }
+    .m-doc-row:last-child { border-bottom: none; }
+    .m-doc-row.highlighted { background: #F0FDFA; margin: 0 -16px; padding: 11px 16px; border-radius: 0; }
+    .m-file-icon {
+      width: 34px; height: 40px; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 8px; font-weight: 800; flex-shrink: 0;
+    }
+    .m-doc-name  { font-size: 12.5px; font-weight: 600; color: var(--text-primary); }
+    .m-doc-meta  { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .m-row-action {
+      width: 28px; height: 28px; border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .m-row-action svg { width: 13px; height: 13px; }
+    .m-row-action.edit { background: var(--primary-light); color: var(--primary); }
+    .m-row-action.del  { background: var(--danger-bg);     color: var(--danger); }
+    .m-overlay {
+      position: absolute; inset: 0;
+      background: rgba(15,23,42,0.55);
+      display: flex; align-items: flex-end;
+      backdrop-filter: blur(2px);
+      z-index: 10;
+    }
+    .m-sheet {
+      width: 100%; background: var(--card);
+      border-radius: 18px 18px 0 0;
+      padding: 0 18px 28px;
+      box-shadow: 0 -8px 32px rgba(0,0,0,0.14);
+    }
+    .m-sheet-handle {
+      width: 36px; height: 4px; background: var(--slate-200);
+      border-radius: 2px; margin: 12px auto 16px;
+    }
+    .m-sheet-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .m-sheet-title { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+    .m-close {
+      width: 28px; height: 28px; border-radius: 7px;
+      border: 1px solid var(--border); background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-muted);
+    }
+    .m-close svg { width: 13px; height: 13px; }
+    .m-form-label { font-size: 11px; font-weight: 600; color: var(--text-primary); display: block; margin-bottom: 4px; }
+    .m-form-label .opt { font-weight: 400; color: var(--slate-400); }
+    .m-input {
+      width: 100%; height: 38px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 0 11px; font-size: 13px; color: var(--text-primary);
+      background: var(--card); font-family: inherit; outline: none;
+      margin-bottom: 10px;
+    }
+    .m-select {
+      width: 100%; height: 38px;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 0 11px; font-size: 13px; color: var(--text-primary);
+      background: var(--card); font-family: inherit; outline: none;
+      appearance: none; margin-bottom: 10px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 11px center;
+      padding-right: 30px;
+    }
+    .m-tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+    .m-tag {
+      padding: 4px 11px; border-radius: 99px;
+      font-size: 11.5px; font-weight: 500;
+      border: 1.5px solid var(--border);
+      background: var(--slate-100); color: var(--text-muted);
+    }
+    .m-tag.on { background: var(--primary-light); border-color: var(--primary-teal); color: var(--primary); font-weight: 600; }
+    .m-tag.add { border-style: dashed; color: var(--slate-400); }
+    .m-btn-primary {
+      width: 100%; height: 42px; background: var(--primary);
+      color: #fff; border-radius: 10px; border: none;
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      margin-bottom: 8px; cursor: pointer;
+    }
+    .m-btn-ghost {
+      width: 100%; height: 40px; background: transparent;
+      color: var(--text-muted); border: 1.5px solid var(--border);
+      border-radius: 10px; font-size: 13px; font-weight: 600;
+      font-family: inherit;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+    }
+    .m-btn-danger {
+      width: 100%; height: 42px; background: var(--danger);
+      color: #fff; border-radius: 10px; border: none;
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      margin-bottom: 8px; cursor: pointer;
+    }
+    .m-danger-zone {
+      background: var(--danger-bg); border: 1px solid var(--danger-border);
+      border-radius: 10px; padding: 14px; text-align: center; margin-bottom: 12px;
+    }
+    .m-danger-icon {
+      width: 42px; height: 42px; background: #FEE2E2;
+      border-radius: 50%; margin: 0 auto 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .m-danger-icon svg { width: 20px; height: 20px; color: var(--danger); }
+    .m-file-preview {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 11px; background: var(--slate-100);
+      border-radius: 8px; border: 1px solid var(--border); margin-bottom: 12px;
+    }
+    .m-fp-icon {
+      width: 30px; height: 36px; border-radius: 4px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 7.5px; font-weight: 800; flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     WEB W1 — UPDATE DOCUMENT
+═══════════════════════════════════════════════════════════════ -->
+<div>
+  <div class="screen-label">Web — W1. Update Document</div>
+  <div class="web-screen">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <span class="logo-text">CloudDoc</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</div>
+        <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>All Documents</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Folders</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Tags</div>
+        <div class="nav-section-label">Alerts</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Expiring Soon<span class="nav-badge">3</span></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Trash</div>
+      </nav>
+      <div class="sidebar-storage">
+        <div class="storage-label"><span>Storage</span><span>1.9 / 5 GB</span></div>
+        <div class="storage-bar"><div class="storage-bar-fill"></div></div>
+        <div class="storage-sub">38% used</div>
+      </div>
+      <div class="sidebar-user">
+        <div class="avatar">AT</div>
+        <div><div class="user-name">Angelica T.</div><div class="user-role">Pro Plan</div></div>
+      </div>
+    </aside>
+
+    <!-- Main (dimmed) -->
+    <div class="web-main dim">
+      <div class="topbar">
+        <div class="topbar-title">All Documents</div>
+        <div class="topbar-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" placeholder="Search by name, tag, category..." />
+        </div>
+        <div class="icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
+        <div class="btn btn-ghost"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Grid</div>
+        <div class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Upload</div>
+      </div>
+      <div class="content">
+        <div class="filter-row">
+          <span class="filter-pill active">All (24)</span>
+          <span class="filter-pill">IDs (4)</span>
+          <span class="filter-pill">Finance (6)</span>
+          <span class="filter-pill">Work (8)</span>
+          <span class="filter-pill">Health (3)</span>
+          <span class="filter-pill">Other (3)</span>
+        </div>
+        <div class="table-card">
+          <table>
+            <thead><tr><th></th><th>Document</th><th>Category</th><th>Tags</th><th>Size</th><th>Uploaded</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" style="accent-color:var(--primary);" /></td>
+                <td><div style="display:flex;align-items:center;gap:10px;"><div class="file-icon-cell fi-pdf">PDF</div><div><div style="font-weight:600;font-size:13px;">Passport_scan.pdf</div><div style="font-size:11px;color:var(--text-muted);">Identity</div></div></div></td>
+                <td><span class="cat-tag">Identity</span></td>
+                <td><span class="cat-tag" style="margin-right:4px;">Identity</span><span class="cat-tag">Travel</span></td>
+                <td style="color:var(--text-muted);font-size:12px;">2.1 MB</td><td style="color:var(--text-muted);font-size:12px;">17 Mar 2026</td><td style="color:var(--text-muted);font-size:12px;">12 Apr 2028</td>
+                <td><span class="status-badge badge-valid">● Valid</span></td>
+                <td><div class="row-actions"><div class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></div></div></td>
+              </tr>
+              <tr class="active-row">
+                <td><input type="checkbox" checked style="accent-color:var(--primary);" /></td>
+                <td><div style="display:flex;align-items:center;gap:10px;"><div class="file-icon-cell fi-doc">DOC</div><div><div style="font-weight:700;font-size:13px;">Employment_contract.docx</div><div style="font-size:11px;color:var(--primary);">Work</div></div></div></td>
+                <td><span class="cat-tag">Work</span></td>
+                <td><span class="cat-tag" style="margin-right:4px;">Work</span><span class="cat-tag">Legal</span></td>
+                <td style="color:var(--text-muted);font-size:12px;">540 KB</td><td style="color:var(--text-muted);font-size:12px;">14 Mar 2026</td><td style="color:var(--text-muted);font-size:12px;">—</td>
+                <td><span class="status-badge badge-valid">● Valid</span></td>
+                <td><div class="row-actions"><div class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="row-btn edit-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></div></div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" style="accent-color:var(--primary);" /></td>
+                <td><div style="display:flex;align-items:center;gap:10px;"><div class="file-icon-cell fi-pdf">PDF</div><div><div style="font-weight:600;font-size:13px;">Health_insurance.pdf</div><div style="font-size:11px;color:var(--text-muted);">Health</div></div></div></td>
+                <td><span class="cat-tag">Health</span></td>
+                <td><span class="cat-tag">Health</span></td>
+                <td style="color:var(--text-muted);font-size:12px;">1.2 MB</td><td style="color:var(--text-muted);font-size:12px;">10 Mar 2026</td><td style="color:var(--text-muted);font-size:12px;">31 Mar 2026</td>
+                <td><span class="status-badge badge-expiring">● Expiring</span></td>
+                <td><div class="row-actions"><div class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></div></div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" style="accent-color:var(--primary);" /></td>
+                <td><div style="display:flex;align-items:center;gap:10px;"><div class="file-icon-cell fi-xls">XLS</div><div><div style="font-weight:600;font-size:13px;">Tax_return_2025.xlsx</div><div style="font-size:11px;color:var(--text-muted);">Finance</div></div></div></td>
+                <td><span class="cat-tag">Finance</span></td>
+                <td><span class="cat-tag" style="margin-right:4px;">Finance</span><span class="cat-tag">Tax</span></td>
+                <td style="color:var(--text-muted);font-size:12px;">88 KB</td><td style="color:var(--text-muted);font-size:12px;">5 Mar 2026</td><td style="color:var(--text-muted);font-size:12px;">—</td>
+                <td><span class="status-badge badge-valid">● Valid</span></td>
+                <td><div class="row-actions"><div class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div><div class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div><div class="row-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></div></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="overlay">
+      <div class="modal" style="width:520px;">
+        <div class="modal-header">
+          <div class="modal-header-left">
+            <div class="modal-icon edit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </div>
+            <div>
+              <div class="modal-title">Edit Document</div>
+              <div class="modal-subtitle">Update document details</div>
+            </div>
+          </div>
+          <div class="close-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        </div>
+        <div class="modal-body">
+          <!-- Current file -->
+          <div class="file-preview">
+            <div class="fp-icon fi-doc">DOC</div>
+            <div class="fp-info">
+              <div class="fp-name">Employment_contract.docx</div>
+              <div class="fp-meta">Work · 540 KB · uploaded 14 Mar 2026</div>
+            </div>
+            <span class="status-badge badge-valid" style="font-size:11px;">● Valid</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Document Name <span style="color:var(--danger);">*</span></label>
+            <input class="form-input filled" type="text" value="Employment Contract — Acme Corp" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Folder</label>
+              <select class="form-select"><option>Work Documents</option></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Category</label>
+              <select class="form-select"><option>Work</option></select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tags</label>
+            <div class="tag-pills">
+              <span class="tag-pill on">Work</span>
+              <span class="tag-pill on">Legal</span>
+              <span class="tag-pill on">Employment</span>
+              <span class="tag-pill">Finance</span>
+              <span class="tag-pill">Government</span>
+              <span class="tag-pill add">+ Add Tag</span>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Expiry Date <span class="opt">(optional)</span></label>
+              <input class="form-input" type="text" placeholder="Select date" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Status</label>
+              <select class="form-select"><option>Valid</option><option>Expiring</option><option>Expired</option><option>Stored</option></select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Notes <span class="opt">(optional)</span></label>
+            <textarea class="form-textarea" placeholder="Add a note about this document..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost">Cancel</button>
+          <button class="btn btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     WEB W2 — DELETE DOCUMENT
+═══════════════════════════════════════════════════════════════ -->
+<div>
+  <div class="screen-label">Web — W2. Delete Document</div>
+  <div class="web-screen">
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+        <span class="logo-text">CloudDoc</span>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label">Main</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>Dashboard</div>
+        <div class="nav-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>All Documents</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Folders</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>Tags</div>
+        <div class="nav-section-label">Alerts</div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Expiring Soon<span class="nav-badge">3</span></div>
+        <div class="nav-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Trash</div>
+      </nav>
+      <div class="sidebar-storage">
+        <div class="storage-label"><span>Storage</span><span>1.9 / 5 GB</span></div>
+        <div class="storage-bar"><div class="storage-bar-fill"></div></div>
+        <div class="storage-sub">38% used</div>
+      </div>
+      <div class="sidebar-user">
+        <div class="avatar">AT</div>
+        <div><div class="user-name">Angelica T.</div><div class="user-role">Pro Plan</div></div>
+      </div>
+    </aside>
+
+    <div class="web-main dim">
+      <div class="topbar">
+        <div class="topbar-title">All Documents</div>
+        <div class="topbar-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input type="text" placeholder="Search..." /></div>
+        <div class="btn btn-primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Upload</div>
+      </div>
+      <div class="content">
+        <div class="filter-row">
+          <span class="filter-pill active">All (24)</span>
+          <span class="filter-pill">IDs (4)</span>
+          <span class="filter-pill">Finance (6)</span>
+          <span class="filter-pill">Work (8)</span>
+          <span class="filter-pill">Health (3)</span>
+        </div>
+        <div class="table-card">
+          <table>
+            <thead><tr><th></th><th>Document</th><th>Category</th><th>Tags</th><th>Size</th><th>Uploaded</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td></td><td><div style="display:flex;align-items:center;gap:10px;"><div class="file-icon-cell fi-pdf">PDF</div>Passport_scan.pdf</div></td><td><span class="cat-tag">Identity</span></td><td><span class="cat-tag">Identity</span></td><td style="font-size:12px;color:var(--text-muted);">2.1 MB</td><td style="font-size:12px;color:var(--text-muted);">17 Mar</td><td style="font-size:12px;color:var(--text-muted);">12 Apr 2028</td><td><span class="status-badge badge-valid">● Valid</span></td><td>···</td></tr>
+              <tr><td></td><td><div style="display:flex;align-items:center;gap:10px;"><div class="file-icon-cell fi-doc">DOC</div>Employment_contract.docx</div></td><td><span class="cat-tag">Work</span></td><td><span class="cat-tag">Work</span></td><td style="font-size:12px;color:var(--text-muted);">540 KB</td><td style="font-size:12px;color:var(--text-muted);">14 Mar</td><td style="font-size:12px;color:var(--text-muted);">—</td><td><span class="status-badge badge-valid">● Valid</span></td><td>···</td></tr>
+              <tr class="active-row"><td></td><td><div style="display:flex;align-items:center;gap:10px;"><div class="file-icon-cell fi-pdf">PDF</div><strong>Health_insurance.pdf</strong></div></td><td><span class="cat-tag">Health</span></td><td><span class="cat-tag">Health</span></td><td style="font-size:12px;color:var(--text-muted);">1.2 MB</td><td style="font-size:12px;color:var(--text-muted);">10 Mar</td><td style="font-size:12px;color:var(--danger);">31 Mar 2026</td><td><span class="status-badge badge-expiring">● Expiring</span></td><td><div class="row-actions"><div class="row-btn del-active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></div></div></td></tr>
+              <tr><td></td><td><div style="display:flex;align-items:center;gap:10px;"><div class="file-icon-cell fi-xls">XLS</div>Tax_return_2025.xlsx</div></td><td><span class="cat-tag">Finance</span></td><td><span class="cat-tag">Finance</span></td><td style="font-size:12px;color:var(--text-muted);">88 KB</td><td style="font-size:12px;color:var(--text-muted);">5 Mar</td><td style="font-size:12px;color:var(--text-muted);">—</td><td><span class="status-badge badge-valid">● Valid</span></td><td>···</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="overlay">
+      <div class="modal" style="width:420px;">
+        <div class="modal-header">
+          <div class="modal-header-left">
+            <div class="modal-icon del">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+            </div>
+            <div>
+              <div class="modal-title">Delete Document</div>
+              <div class="modal-subtitle">This action is permanent</div>
+            </div>
+          </div>
+          <div class="close-x"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+        </div>
+        <div class="modal-body">
+          <div class="danger-zone">
+            <div class="danger-zone-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4h6v2"/></svg>
+            </div>
+            <h3>Delete Health_insurance.pdf?</h3>
+            <p>This will permanently remove the file from your vault. This action <strong>cannot be undone</strong>.</p>
+          </div>
+
+          <div class="file-preview">
+            <div class="fp-icon fi-pdf">PDF</div>
+            <div class="fp-info">
+              <div class="fp-name">Health_insurance.pdf</div>
+              <div class="fp-meta">Health · 1.2 MB · expires 31 Mar 2026</div>
+            </div>
+            <span class="status-badge badge-expiring" style="font-size:11px;">● Expiring</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:7px;">
+            <div class="check-item">
+              <div class="check-box"></div>
+              I understand this file will be permanently deleted
+            </div>
+            <div class="check-item">
+              <div class="check-box"></div>
+              I have a local copy or no longer need this file
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-ghost">Cancel</button>
+          <button class="btn btn-danger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            Delete Document
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════
+     MOBILE SCREENS
+═══════════════════════════════════════════════════════════════ -->
+<div style="display:flex; gap:48px; align-items:flex-start;">
+
+  <!-- M1 — UPDATE DOCUMENT -->
+  <div>
+    <div class="screen-label">Mobile — M1. Update Document</div>
+    <div class="mobile-screen" style="height:780px; overflow:hidden; position:relative;">
+      <div class="status-bar"><span>9:41</span><span style="display:flex;gap:3px;align-items:center;"><svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#1E293B"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#1E293B"/><rect x="9" y="0" width="3" height="12" rx="1" fill="#1E293B"/><rect x="13.5" y="0" width="2.5" height="12" rx="1" fill="#E2E8F0"/></svg><svg width="16" height="12" viewBox="0 0 24 24" fill="none" stroke="#1E293B" stroke-width="2"><path d="M1.42 9C4.17 6.06 7.9 4.2 12 4.2s7.83 1.86 10.58 4.8"/><path d="M5.13 12.54C7.06 10.42 9.4 9 12 9s4.94 1.42 6.87 3.54"/><path d="M8.85 15.79C10.06 14.39 10.95 13.5 12 13.5s1.94.89 3.15 2.29"/><circle cx="12" cy="19" r="1" fill="#1E293B"/></svg></span></div>
+      <div class="m-topbar">
+        <div class="m-topbar-title">All Documents</div>
+        <div class="m-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <div class="m-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></div>
+      </div>
+      <div class="m-content" style="opacity:0.3;">
+        <div class="m-filter-row">
+          <span class="m-pill active">All</span><span class="m-pill">IDs</span><span class="m-pill">Finance</span><span class="m-pill">Work</span><span class="m-pill">Health</span>
+        </div>
+        <div class="m-doc-row"><div class="m-file-icon fi-pdf">PDF</div><div style="flex:1;"><div class="m-doc-name">Passport_scan.pdf</div><div class="m-doc-meta">Identity · 2.1 MB</div></div><span class="status-badge badge-valid" style="font-size:10px;">Valid</span></div>
+        <div class="m-doc-row highlighted"><div class="m-file-icon fi-doc">DOC</div><div style="flex:1;"><div class="m-doc-name" style="color:var(--primary);">Employment_contract.docx</div><div class="m-doc-meta">Work · 540 KB</div></div><div class="m-row-action edit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div></div>
+        <div class="m-doc-row"><div class="m-file-icon fi-pdf">PDF</div><div style="flex:1;"><div class="m-doc-name">Health_insurance.pdf</div><div class="m-doc-meta">Health · 1.2 MB</div></div><span class="status-badge badge-expiring" style="font-size:10px;">Expiring</span></div>
+      </div>
+
+      <!-- Bottom sheet -->
+      <div class="m-overlay">
+        <div class="m-sheet">
+          <div class="m-sheet-handle"></div>
+          <div class="m-sheet-header">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="modal-icon edit" style="width:30px;height:30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:14px;height:14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+              <div class="m-sheet-title">Edit Document</div>
+            </div>
+            <div class="m-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+          </div>
+          <div class="m-file-preview">
+            <div class="m-fp-icon fi-doc">DOC</div>
+            <div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--text-primary);">Employment_contract.docx</div><div style="font-size:10px;color:var(--text-muted);">Work · 540 KB</div></div>
+            <span class="status-badge badge-valid" style="font-size:10px;">Valid</span>
+          </div>
+          <label class="m-form-label">Document Name</label>
+          <input class="m-input" type="text" value="Employment Contract — Acme Corp" />
+          <label class="m-form-label">Folder</label>
+          <select class="m-select"><option>Work Documents</option></select>
+          <label class="m-form-label">Category</label>
+          <select class="m-select"><option>Work</option></select>
+          <label class="m-form-label">Tags</label>
+          <div class="m-tag-row">
+            <span class="m-tag on">Work</span><span class="m-tag on">Legal</span><span class="m-tag on">Employment</span><span class="m-tag add">+ Add</span>
+          </div>
+          <label class="m-form-label">Expiry Date <span class="opt">(optional)</span></label>
+          <input class="m-input" type="text" placeholder="Select date" />
+          <button class="m-btn-primary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:15px;height:15px;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+            Save Changes
+          </button>
+          <button class="m-btn-ghost">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- M2 — DELETE DOCUMENT -->
+  <div>
+    <div class="screen-label">Mobile — M2. Delete Document</div>
+    <div class="mobile-screen" style="height:780px; overflow:hidden; position:relative;">
+      <div class="status-bar"><span>9:41</span><span style="display:flex;gap:3px;align-items:center;"><svg width="16" height="12" viewBox="0 0 16 12" fill="none"><rect x="0" y="3" width="3" height="9" rx="1" fill="#1E293B"/><rect x="4.5" y="2" width="3" height="10" rx="1" fill="#1E293B"/><rect x="9" y="0" width="3" height="12" rx="1" fill="#1E293B"/><rect x="13.5" y="0" width="2.5" height="12" rx="1" fill="#E2E8F0"/></svg></span></div>
+      <div class="m-topbar">
+        <div class="m-topbar-title">All Documents</div>
+        <div class="m-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <div class="m-icon-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg></div>
+      </div>
+      <div class="m-content" style="opacity:0.3;">
+        <div class="m-filter-row">
+          <span class="m-pill active">All</span><span class="m-pill">IDs</span><span class="m-pill">Finance</span><span class="m-pill">Work</span><span class="m-pill">Health</span>
+        </div>
+        <div class="m-doc-row"><div class="m-file-icon fi-pdf">PDF</div><div style="flex:1;"><div class="m-doc-name">Passport_scan.pdf</div><div class="m-doc-meta">Identity · 2.1 MB</div></div><span class="status-badge badge-valid" style="font-size:10px;">Valid</span></div>
+        <div class="m-doc-row"><div class="m-file-icon fi-doc">DOC</div><div style="flex:1;"><div class="m-doc-name">Employment_contract.docx</div><div class="m-doc-meta">Work · 540 KB</div></div><span class="status-badge badge-valid" style="font-size:10px;">Valid</span></div>
+        <div class="m-doc-row highlighted"><div class="m-file-icon fi-pdf">PDF</div><div style="flex:1;"><div class="m-doc-name" style="color:var(--danger);">Health_insurance.pdf</div><div class="m-doc-meta">Health · 1.2 MB</div></div><div class="m-row-action del"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></div></div>
+      </div>
+
+      <!-- Bottom sheet -->
+      <div class="m-overlay">
+        <div class="m-sheet">
+          <div class="m-sheet-handle"></div>
+          <div class="m-sheet-header">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div class="modal-icon del" style="width:30px;height:30px;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:14px;height:14px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4h6v2"/></svg></div>
+              <div class="m-sheet-title">Delete Document</div>
+            </div>
+            <div class="m-close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></div>
+          </div>
+          <div class="m-danger-zone">
+            <div class="m-danger-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M9 6V4h6v2"/></svg></div>
+            <div style="font-size:13px;font-weight:700;color:var(--text-primary);margin-bottom:5px;">Delete this document?</div>
+            <div style="font-size:11.5px;color:var(--text-muted);line-height:1.55;">This will permanently remove the file. This action <strong>cannot be undone</strong>.</div>
+          </div>
+          <div class="m-file-preview">
+            <div class="m-fp-icon fi-pdf">PDF</div>
+            <div style="flex:1;"><div style="font-size:12px;font-weight:600;color:var(--text-primary);">Health_insurance.pdf</div><div style="font-size:10px;color:var(--text-muted);">Health · 1.2 MB · expires 31 Mar 2026</div></div>
+            <span class="status-badge badge-expiring" style="font-size:10px;">Expiring</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+            <div class="check-item" style="font-size:12px;">
+              <div class="check-box"></div>
+              I understand this will be permanently deleted
+            </div>
+            <div class="check-item" style="font-size:12px;">
+              <div class="check-box"></div>
+              I no longer need this file
+            </div>
+          </div>
+          <button class="m-btn-danger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:15px;height:15px;"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            Delete Document
+          </button>
+          <button class="m-btn-ghost">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

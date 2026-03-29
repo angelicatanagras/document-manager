@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DocVault — Upload Modal</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --primary:       #0F766E;
+      --primary-teal:  #14B8A6;
+      --primary-light: #CCFBF1;
+      --bg:            #F8FAFC;
+      --card:          #FFFFFF;
+      --sidebar:       #1E293B;
+      --text-primary:  #1E293B;
+      --text-muted:    #64748B;
+      --border:        #E2E8F0;
+      --slate-100:     #F1F5F9;
+      --slate-400:     #94A3B8;
+      --warning:       #D97706;
+      --danger:        #EF4444;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ─── Sidebar (same as dashboard, dimmed) ─── */
+    .sidebar {
+      width: 210px;
+      min-width: 210px;
+      background: var(--sidebar);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      opacity: 0.45;
+    }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 10px;
+      padding: 20px 16px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--primary-teal);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 18px; height: 18px; }
+    .logo-text { font-size: 16px; font-weight: 700; color: #F1F5F9; }
+    .sidebar-nav { flex: 1; padding: 12px 8px; display: flex; flex-direction: column; gap: 2px; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px; border-radius: 6px; color: #CBD5E1;
+      font-size: 13.5px; font-weight: 500;
+    }
+    .nav-item svg { width: 16px; height: 16px; }
+    .nav-item.active { background: rgba(20,184,166,0.18); color: #5EEAD4; }
+    .badge { margin-left: auto; background: var(--warning); color: #fff; font-size: 10px; font-weight: 700; border-radius: 10px; padding: 1px 6px; }
+    .sidebar-storage { padding: 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .storage-bar { height: 5px; background: rgba(255,255,255,0.12); border-radius: 99px; overflow: hidden; margin-top: 6px; }
+    .storage-bar-fill { height: 100%; width: 38%; background: var(--primary-teal); border-radius: 99px; }
+    .storage-label { display: flex; justify-content: space-between; font-size: 12px; color: #CBD5E1; }
+    .sidebar-user { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.06); }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg,#0F766E,#14B8A6); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #fff; flex-shrink: 0; }
+    .user-name { font-size: 13px; font-weight: 600; color: #F1F5F9; }
+    .user-role { font-size: 11px; color: #94A3B8; }
+
+    /* ─── Main (blurred/dimmed) ─── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Topbar */
+    .topbar {
+      height: 52px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 12px;
+      opacity: 0.45;
+    }
+    .topbar-greeting { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .topbar-greeting span { color: var(--primary); }
+
+    /* Background content (dimmed) */
+    .bg-content {
+      flex: 1;
+      padding: 20px 24px;
+      opacity: 0.3;
+      overflow: hidden;
+    }
+    .bg-upload-zone {
+      border: 2px dashed var(--primary-teal);
+      border-radius: 12px;
+      background: var(--primary-light);
+      padding: 40px 20px;
+      text-align: center;
+      height: 160px;
+    }
+
+    /* ─── Dark overlay ─── */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      backdrop-filter: blur(2px);
+    }
+
+    /* ─── Modal ─── */
+    .modal {
+      width: 340px;
+      background: var(--card);
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25), 0 4px 16px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+
+    /* Modal header */
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .modal-title { font-size: 15px; font-weight: 700; color: var(--text-primary); }
+    .close-btn {
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: transparent;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+    .close-btn svg { width: 14px; height: 14px; }
+
+    /* File preview row */
+    .modal-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
+
+    .file-preview {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: var(--slate-100);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+    .file-thumb {
+      width: 36px; height: 42px;
+      background: #FEF2F2;
+      border-radius: 4px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      border: 1px solid #FECACA;
+      font-size: 7.5px; font-weight: 800; color: #EF4444;
+      flex-shrink: 0;
+    }
+    .file-preview-info { flex: 1; min-width: 0; }
+    .file-preview-name { font-size: 12.5px; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .file-preview-size { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
+    .progress-wrap { margin-top: 6px; }
+    .progress-bar {
+      height: 4px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 100%;
+      background: var(--primary-teal);
+      border-radius: 99px;
+    }
+    .progress-label { font-size: 10px; color: var(--primary); font-weight: 600; margin-top: 3px; }
+    .check-icon {
+      width: 20px; height: 20px;
+      background: #DCFCE7;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .check-icon svg { width: 11px; height: 11px; color: #16A34A; }
+
+    /* Form fields */
+    .form-group { display: flex; flex-direction: column; gap: 5px; }
+    .form-label { font-size: 12px; font-weight: 600; color: var(--text-primary); }
+    .form-input {
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--card);
+      font-family: inherit;
+      outline: none;
+    }
+    .form-input:focus { border-color: var(--primary-teal); }
+    .form-input.filled { border-color: var(--primary-teal); background: #F0FDFA; }
+
+    .form-select {
+      height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0 10px;
+      font-size: 13px;
+      color: var(--text-primary);
+      background: var(--card);
+      font-family: inherit;
+      outline: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 30px;
+      cursor: pointer;
+    }
+
+    /* Tag pills */
+    .tag-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag-pill {
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1.5px solid var(--border);
+      background: var(--slate-100);
+      color: var(--text-muted);
+      transition: all 0.12s;
+    }
+    .tag-pill.selected {
+      background: var(--primary-light);
+      border-color: var(--primary-teal);
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    /* Footer */
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 12px 20px 16px;
+      border-top: 1px solid var(--border);
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 0 16px; height: 36px; border-radius: 6px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; border: none; font-family: inherit;
+    }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-primary); }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary svg { width: 14px; height: 14px; }
+  </style>
+</head>
+<body>
+
+<!-- ─── Sidebar (dimmed) ─── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+    </div>
+    <span class="logo-text">DocVault</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      All Documents
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Folders
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      Tags
+    </div>
+    <div class="nav-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Expiring Soon
+      <span class="badge">3</span>
+    </div>
+  </nav>
+  <div class="sidebar-storage">
+    <div class="storage-label"><span>Storage</span><span>1.9 / 5 GB</span></div>
+    <div class="storage-bar"><div class="storage-bar-fill"></div></div>
+  </div>
+  <div class="sidebar-user">
+    <div class="avatar">AT</div>
+    <div><div class="user-name">Angelica T.</div><div class="user-role">Personal account</div></div>
+  </div>
+</aside>
+
+<!-- ─── Main ─── -->
+<div class="main">
+  <header class="topbar">
+    <div class="topbar-greeting">Good morning, <span>Angelica</span> 👋</div>
+  </header>
+  <div class="bg-content">
+    <div class="bg-upload-zone"></div>
+  </div>
+
+  <!-- Overlay + Modal -->
+  <div class="overlay">
+    <div class="modal">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <span class="modal-title">Upload document</span>
+        <button class="close-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Body -->
+      <div class="modal-body">
+
+        <!-- File preview + progress -->
+        <div class="file-preview">
+          <div class="file-thumb">PDF</div>
+          <div class="file-preview-info">
+            <div class="file-preview-name">Passport_Scan_2024.pdf</div>
+            <div class="file-preview-size">2.4 MB · PDF Document</div>
+            <div class="progress-wrap">
+              <div class="progress-bar"><div class="progress-fill"></div></div>
+              <div class="progress-label">Upload complete</div>
+            </div>
+          </div>
+          <div class="check-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Document name -->
+        <div class="form-group">
+          <label class="form-label">Document name</label>
+          <input class="form-input filled" type="text" value="Passport Scan 2024" />
+        </div>
+
+        <!-- Folder -->
+        <div class="form-group">
+          <label class="form-label">Folder</label>
+          <select class="form-select">
+            <option>Identity</option>
+            <option>Finance</option>
+            <option>Health</option>
+            <option>Contracts</option>
+            <option>Insurance</option>
+          </select>
+        </div>
+
+        <!-- Tags -->
+        <div class="form-group">
+          <label class="form-label">Tags</label>
+          <div class="tag-pills">
+            <span class="tag-pill selected">Identity</span>
+            <span class="tag-pill selected">Government</span>
+            <span class="tag-pill selected">Travel</span>
+            <span class="tag-pill">Finance</span>
+            <span class="tag-pill">Health</span>
+            <span class="tag-pill">Work</span>
+          </div>
+        </div>
+
+        <!-- Expiry date -->
+        <div class="form-group">
+          <label class="form-label">Expiry date <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+          <input class="form-input filled" type="date" value="2026-04-10" />
+        </div>
+
+      </div>
+
+      <!-- Footer -->
+      <div class="modal-footer">
+        <button class="btn btn-ghost">Cancel</button>
+        <button class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17 21 17 13 7 13 7 21"/>
+            <polyline points="7 3 7 8 15 8"/>
+          </svg>
+          Save document
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CloudDoc — Landing Page</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #ffffff;
+      width: 1440px;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 80px;
+      border-bottom: 1px solid #EFEFEF;
+      background: #fff;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-box {
+      width: 34px; height: 34px;
+      background: #1a7a6e;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-box svg { width: 18px; height: 18px; fill: white; }
+    .logo-name { font-size: 17px; font-weight: 700; color: #1a1a2e; letter-spacing: -0.3px; }
+    .nav-links { display: flex; gap: 36px; }
+    .nav-links a { text-decoration: none; font-size: 14px; color: #555; font-weight: 500; }
+    .nav-links a:hover { color: #1a7a6e; }
+    .nav-right { display: flex; align-items: center; gap: 10px; }
+    .btn-signin {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 16px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 13px; font-weight: 600; color: #333;
+      text-decoration: none; background: white;
+    }
+    .btn-signin svg { width: 14px; height: 14px; stroke: #555; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-start {
+      padding: 8px 18px;
+      background: #1a7a6e; color: white;
+      border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* HERO */
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 80px 80px 72px;
+      background: linear-gradient(160deg, #f4fbfa 0%, #ffffff 60%);
+      gap: 64px;
+    }
+    .hero-left { flex: 1; max-width: 540px; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: #e6f5f3; color: #1a7a6e;
+      font-size: 12px; font-weight: 600;
+      padding: 5px 12px; border-radius: 100px;
+      margin-bottom: 24px;
+    }
+    .hero-badge span { width: 6px; height: 6px; background: #1a7a6e; border-radius: 50%; display: inline-block; }
+    .hero-left h1 {
+      font-size: 52px; font-weight: 800;
+      line-height: 1.1; letter-spacing: -1.5px;
+      color: #1a1a2e; margin-bottom: 18px;
+    }
+    .hero-left h1 em { font-style: normal; color: #1a7a6e; }
+    .hero-left p { font-size: 16px; color: #666; line-height: 1.65; margin-bottom: 36px; }
+    .hero-cta { display: flex; gap: 12px; margin-bottom: 20px; }
+    .btn-primary {
+      display: flex; align-items: center; gap: 7px;
+      padding: 12px 24px;
+      background: #1a7a6e; color: white;
+      border-radius: 9px; font-size: 14px; font-weight: 600;
+      text-decoration: none;
+    }
+    .btn-primary svg { width: 15px; height: 15px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-ghost {
+      padding: 12px 24px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 9px; font-size: 14px; font-weight: 600;
+      color: #333; text-decoration: none; background: white;
+    }
+    .hero-note { font-size: 12px; color: #aaa; }
+
+    /* HERO RIGHT — APP MOCKUP */
+    .hero-right { flex: 1; max-width: 620px; }
+    .mockup {
+      background: #f5f5f5;
+      border-radius: 14px;
+      border: 1px solid #e8e8e8;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.09);
+    }
+    .mockup-bar {
+      background: #1a1a2e; padding: 11px 16px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .mockup-url {
+      flex: 1; margin: 0 12px;
+      background: #2e2e42; border-radius: 4px;
+      padding: 4px 10px;
+    }
+    .mockup-url span { font-size: 10px; color: #777; }
+    .mockup-body { display: flex; height: 320px; }
+    .mockup-sidebar {
+      width: 150px; background: #1a1a2e;
+      padding: 14px 10px; flex-shrink: 0;
+      display: flex; flex-direction: column; gap: 3px;
+    }
+    .mockup-logo { display: flex; align-items: center; gap: 7px; margin-bottom: 16px; padding: 0 4px; }
+    .mockup-logo-box { width: 22px; height: 22px; background: #1a7a6e; border-radius: 5px; flex-shrink: 0; }
+    .mockup-logo-text { font-size: 11px; font-weight: 700; color: white; }
+    .mockup-nav { display: flex; align-items: center; gap: 7px; padding: 6px 8px; border-radius: 6px; }
+    .mockup-nav.active { background: #1a7a6e; }
+    .mockup-nav-icon { width: 12px; height: 12px; background: #444; border-radius: 2px; flex-shrink: 0; }
+    .mockup-nav.active .mockup-nav-icon { background: rgba(255,255,255,0.5); }
+    .mockup-nav-label { height: 7px; background: #333; border-radius: 3px; flex: 1; }
+    .mockup-nav.active .mockup-nav-label { background: rgba(255,255,255,0.35); }
+    .mockup-storage { margin-top: auto; padding: 0 4px; }
+    .mockup-storage-bar { height: 4px; background: #333; border-radius: 2px; margin-bottom: 5px; }
+    .mockup-storage-bar-fill { height: 100%; width: 38%; background: #1a7a6e; border-radius: 2px; }
+    .mockup-storage-label { height: 6px; background: #333; border-radius: 3px; width: 75%; }
+    .mockup-content { flex: 1; background: white; padding: 16px; overflow: hidden; }
+    .mockup-topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .mockup-greeting { height: 9px; width: 130px; background: #f0f0f0; border-radius: 4px; }
+    .mockup-actions { display: flex; gap: 7px; }
+    .mockup-search { height: 26px; width: 150px; background: #f5f5f5; border-radius: 5px; border: 1px solid #ebebeb; }
+    .mockup-upload-btn { height: 26px; width: 70px; background: #1a7a6e; border-radius: 5px; }
+    .mockup-dropzone {
+      border: 1.5px dashed #c5e8e4; border-radius: 8px;
+      background: #f9fefd; height: 90px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 5px;
+      margin-bottom: 14px;
+    }
+    .mockup-dropzone-icon { width: 26px; height: 26px; background: #ddf0ee; border-radius: 50%; }
+    .mockup-dropzone-text { height: 7px; width: 110px; background: #e0e0e0; border-radius: 3px; }
+    .mockup-dropzone-sub { height: 6px; width: 75px; background: #ebebeb; border-radius: 3px; }
+    .mockup-section-title { height: 8px; width: 100px; background: #e8e8e8; border-radius: 3px; margin-bottom: 10px; }
+    .mockup-file { display: flex; align-items: center; gap: 9px; padding: 7px 8px; background: #fafafa; border-radius: 5px; margin-bottom: 6px; }
+    .mockup-file-icon { width: 26px; height: 26px; border-radius: 4px; flex-shrink: 0; }
+    .mockup-file-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .mockup-file-name { height: 7px; background: #e0e0e0; border-radius: 3px; width: 65%; }
+    .mockup-file-meta { height: 5px; background: #ebebeb; border-radius: 3px; width: 40%; }
+    .mockup-file-badge { height: 17px; width: 42px; border-radius: 9px; flex-shrink: 0; }
+
+    /* FEATURES */
+    .features {
+      padding: 80px 80px;
+      background: #fafafa;
+      border-top: 1px solid #f0f0f0;
+    }
+    .features-header { text-align: center; margin-bottom: 52px; }
+    .tag-label { font-size: 11px; font-weight: 700; color: #1a7a6e; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+    .features-header h2 { font-size: 34px; font-weight: 800; letter-spacing: -0.8px; color: #1a1a2e; margin-bottom: 10px; }
+    .features-header p { font-size: 15px; color: #888; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1060px; margin: 0 auto; }
+    .feat-card { background: white; border: 1px solid #efefef; border-radius: 12px; padding: 26px; }
+    .feat-icon { width: 42px; height: 42px; background: #e6f5f3; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .feat-icon svg { width: 20px; height: 20px; stroke: #1a7a6e; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .feat-card h3 { font-size: 14px; font-weight: 700; color: #1a1a2e; margin-bottom: 7px; }
+    .feat-card p { font-size: 13px; color: #888; line-height: 1.6; }
+
+    /* STATS */
+    .stats { background: #1a1a2e; padding: 56px 80px; display: flex; justify-content: center; gap: 100px; }
+    .stat { text-align: center; }
+    .stat-val { font-size: 38px; font-weight: 800; color: white; letter-spacing: -1px; }
+    .stat-val em { color: #1a7a6e; font-style: normal; }
+    .stat-lbl { font-size: 13px; color: #666; margin-top: 4px; }
+
+    /* CTA */
+    .cta {
+      padding: 80px 80px;
+      background: linear-gradient(135deg, #f4fbfa 0%, #e8f5f3 100%);
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+    }
+    .cta h2 { font-size: 36px; font-weight: 800; letter-spacing: -0.8px; color: #1a1a2e; margin-bottom: 12px; }
+    .cta p { font-size: 15px; color: #777; margin-bottom: 30px; }
+    .cta-btns { display: flex; gap: 12px; }
+
+    /* FOOTER */
+    footer {
+      padding: 24px 80px;
+      border-top: 1px solid #f0f0f0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-logo { display: flex; align-items: center; gap: 8px; }
+    .footer-logo-box { width: 22px; height: 22px; background: #1a7a6e; border-radius: 5px; }
+    .footer-logo-text { font-size: 13px; font-weight: 700; color: #1a1a2e; }
+    .footer-copy { font-size: 12px; color: #bbb; }
+    .footer-links { display: flex; gap: 20px; }
+    .footer-links a { font-size: 12px; color: #bbb; text-decoration: none; }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">
+      <div class="logo-box">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8" style="fill:rgba(255,255,255,0.3)"/></svg>
+      </div>
+      <span class="logo-name">CloudDoc</span>
+    </div>
+    <div class="nav-links">
+      <a href="#">Features</a>
+      <a href="#">How it works</a>
+      <a href="#">Pricing</a>
+    </div>
+    <div class="nav-right">
+      <a href="#" class="btn-signin">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Sign in
+      </a>
+      <a href="#" class="btn-start">Get started free →</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-badge"><span></span> Free 5 GB · No credit card needed</div>
+      <h1>Your personal<br><em>document vault</em><br>in the cloud</h1>
+      <p>Upload, organise, and access all your important files — passports, contracts, insurance, and more — from any device, securely.</p>
+      <div class="hero-cta">
+        <a href="#" class="btn-primary">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Start for free
+        </a>
+        <a href="#" class="btn-ghost">See how it works</a>
+      </div>
+      <p class="hero-note">Supports PDF · DOCX · JPG · PNG · XLSX &nbsp;·&nbsp; Max 50 MB</p>
+    </div>
+
+    <div class="hero-right">
+      <div class="mockup">
+        <div class="mockup-bar">
+          <div class="dot" style="background:#ff5f57"></div>
+          <div class="dot" style="background:#ffbd2e"></div>
+          <div class="dot" style="background:#28c840"></div>
+          <div class="mockup-url"><span>app.clouddoc.io/dashboard</span></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-sidebar">
+            <div class="mockup-logo">
+              <div class="mockup-logo-box"></div>
+              <span class="mockup-logo-text">CloudDoc</span>
+            </div>
+            <div class="mockup-nav active"><div class="mockup-nav-icon"></div><div class="mockup-nav-label"></div></div>
+            <div class="mockup-nav"><div class="mockup-nav-icon"></div><div class="mockup-nav-label"></div></div>
+            <div class="mockup-nav"><div class="mockup-nav-icon"></div><div class="mockup-nav-label"></div></div>
+            <div class="mockup-nav"><div class="mockup-nav-icon"></div><div class="mockup-nav-label"></div></div>
+            <div class="mockup-nav"><div class="mockup-nav-icon"></div><div class="mockup-nav-label"></div></div>
+            <div class="mockup-storage">
+              <div class="mockup-storage-bar"><div class="mockup-storage-bar-fill"></div></div>
+              <div class="mockup-storage-label"></div>
+            </div>
+          </div>
+          <div class="mockup-content">
+            <div class="mockup-topbar">
+              <div class="mockup-greeting"></div>
+              <div class="mockup-actions">
+                <div class="mockup-search"></div>
+                <div class="mockup-upload-btn"></div>
+              </div>
+            </div>
+            <div class="mockup-dropzone">
+              <div class="mockup-dropzone-icon"></div>
+              <div class="mockup-dropzone-text"></div>
+              <div class="mockup-dropzone-sub"></div>
+            </div>
+            <div class="mockup-section-title"></div>
+            <div class="mockup-file">
+              <div class="mockup-file-icon" style="background:#fee2e2"></div>
+              <div class="mockup-file-info"><div class="mockup-file-name"></div><div class="mockup-file-meta"></div></div>
+              <div class="mockup-file-badge" style="background:#fef3c7"></div>
+            </div>
+            <div class="mockup-file">
+              <div class="mockup-file-icon" style="background:#dbeafe"></div>
+              <div class="mockup-file-info"><div class="mockup-file-name"></div><div class="mockup-file-meta"></div></div>
+              <div class="mockup-file-badge" style="background:#dcfce7"></div>
+            </div>
+            <div class="mockup-file">
+              <div class="mockup-file-icon" style="background:#d1fae5"></div>
+              <div class="mockup-file-info"><div class="mockup-file-name"></div><div class="mockup-file-meta"></div></div>
+              <div class="mockup-file-badge" style="background:#f3f4f6"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="features-header">
+      <div class="tag-label">Why CloudDoc</div>
+      <h2>Everything you need to stay organised</h2>
+      <p>One place for all your personal documents — always accessible, always secure.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <h3>Easy Upload</h3>
+        <p>Drag and drop or choose files. Supports PDF, DOCX, JPG, PNG, and XLSX up to 50 MB.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+        <h3>Folder Organisation</h3>
+        <p>Create folders and subfolders to keep documents structured the way you think.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></div>
+        <h3>Search & Filter</h3>
+        <p>Find any document instantly by name, type, category, or date range.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Secure Storage</h3>
+        <p>Authentication-protected access on every request. Your files stay private.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3>Expiry Reminders</h3>
+        <p>Get alerts when passports, insurance, or contracts are about to expire.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <h3>Version History</h3>
+        <p>Re-upload documents and keep every previous version. Restore any revision.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="stat-val">5<em>GB</em></div><div class="stat-lbl">Free storage included</div></div>
+    <div class="stat"><div class="stat-val"><em>5</em></div><div class="stat-lbl">Supported file types</div></div>
+    <div class="stat"><div class="stat-val"><em>&lt;</em>2s</div><div class="stat-lbl">Average load time</div></div>
+    <div class="stat"><div class="stat-val">100<em>%</em></div><div class="stat-lbl">Web-based, any device</div></div>
+  </div>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Ready to organise your documents?</h2>
+    <p>Get started for free — no credit card required. 5 GB included from day one.</p>
+    <div class="cta-btns">
+      <a href="#" class="btn-primary">
+        <svg viewBox="0 0 24 24" width="15" height="15" stroke="white" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+        Create free account
+      </a>
+      <a href="#" class="btn-ghost">Sign in →</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">
+      <div class="footer-logo-box"></div>
+      <span class="footer-logo-text">CloudDoc</span>
+    </div>
+    <span class="footer-copy">© 2026 CloudDoc. All rights reserved.</span>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>

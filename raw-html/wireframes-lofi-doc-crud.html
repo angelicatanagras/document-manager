@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CloudDoc — Document Update & Delete Screens</title>
+  <script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #c0c0c0;
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+    }
+
+    /* ── LABELS ── */
+    .screen-label {
+      font-size: 13px; font-weight: 700; color: #222;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    /* ── WEB SCREEN ── */
+    .web-screen {
+      width: 1440px;
+      border: 2px solid #333;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* ── MOBILE SCREEN ── */
+    .mobile-screen {
+      width: 390px;
+      border: 2px solid #333;
+      position: relative;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    /* ── SHARED ── */
+    .box       { background: #d0d0d0; border: 1px solid #999; }
+    .box-dark  { background: #444;    border: 1px solid #222; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 210px; min-width: 210px;
+      background: #2a2a2a;
+      display: flex; flex-direction: column;
+    }
+    .sidebar-logo {
+      display: flex; align-items: center; gap: 10px;
+      padding: 18px 14px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .logo-icon { width: 30px; height: 30px; background: #888; border-radius: 6px; }
+    .logo-text { font-size: 14px; font-weight: 700; color: #eee; }
+    .sidebar-section {
+      font-size: 9px; font-weight: 700; color: #888;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 10px 12px 4px;
+    }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; color: #bbb; font-size: 12px;
+    }
+    .nav-item.active { background: rgba(255,255,255,0.1); color: #eee; }
+    .nav-icon { width: 14px; height: 14px; background: #888; border-radius: 2px; flex-shrink: 0; }
+    .nav-icon.active { background: #ccc; }
+    .nav-badge {
+      margin-left: auto; background: #888; color: #fff;
+      font-size: 9px; font-weight: 700; border-radius: 8px;
+      padding: 1px 6px;
+    }
+    .sidebar-storage {
+      padding: 14px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      margin-top: auto;
+    }
+    .storage-row { display: flex; justify-content: space-between; font-size: 10px; color: #aaa; margin-bottom: 6px; }
+    .storage-bar-bg { height: 4px; background: rgba(255,255,255,0.12); border-radius: 99px; }
+    .storage-bar-fill { height: 4px; background: #888; border-radius: 99px; }
+    .sidebar-user {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .avatar { width: 28px; height: 28px; background: #888; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      height: 50px; background: #fff;
+      border-bottom: 1px solid #ccc;
+      display: flex; align-items: center;
+      padding: 0 20px; gap: 10px; flex-shrink: 0;
+    }
+    .topbar-title { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+    .topbar-search {
+      flex: 1; max-width: 380px; margin-left: auto;
+      height: 32px; background: #f5f5f5;
+      border: 1px solid #ccc; border-radius: 5px;
+      display: flex; align-items: center;
+      padding: 0 10px; font-size: 11px; color: #aaa; gap: 6px;
+    }
+    .search-icon { width: 12px; height: 12px; background: #bbb; border-radius: 50%; }
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 6px; height: 32px; padding: 0 12px;
+      border-radius: 4px; font-size: 12px; font-weight: 700;
+    }
+    .btn-primary { background: #444; color: #fff; }
+    .btn-outline { background: #fff; border: 1.5px solid #ccc; color: #333; }
+    .btn-danger  { background: #777; color: #fff; }
+
+    /* ── CONTENT ── */
+    .content { flex: 1; padding: 18px 24px; background: #f5f5f5; }
+
+    /* ── TABLE ── */
+    .card {
+      background: #fff; border: 1px solid #ccc;
+      border-radius: 6px; overflow: hidden;
+    }
+    .table { width: 100%; border-collapse: collapse; }
+    .table th {
+      background: #f5f5f5; border-bottom: 1px solid #ddd;
+      text-align: left; padding: 8px 10px;
+      font-size: 10px; font-weight: 700; color: #888;
+      text-transform: uppercase; letter-spacing: 0.04em;
+    }
+    .table td {
+      padding: 9px 10px; border-bottom: 1px solid #eee;
+      font-size: 11px; color: #333; vertical-align: middle;
+    }
+    .table tr:last-child td { border-bottom: none; }
+    .table tr.highlighted td { background: #f0f0f0; }
+    .tag {
+      display: inline-block; padding: 2px 8px;
+      background: #eee; border: 1px solid #bbb;
+      border-radius: 3px; font-size: 9px; font-weight: 700; color: #555;
+    }
+    .tag.muted { background: #f5f5f5; border-color: #ddd; color: #999; }
+    .chip {
+      display: inline-block; padding: 4px 12px;
+      background: #eee; border: 1.5px solid #ccc;
+      border-radius: 99px; font-size: 11px; color: #555;
+    }
+    .chip.active { background: #555; color: #fff; border-color: #555; }
+    .file-icon {
+      width: 28px; height: 34px;
+      background: #ddd; border: 1px solid #bbb; border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 7px; color: #666; flex-shrink: 0;
+    }
+    .action-btn {
+      width: 24px; height: 24px;
+      background: #eee; border: 1px solid #ccc; border-radius: 3px;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 10px;
+    }
+    .action-btn.active { background: #555; border-color: #555; color: #fff; }
+
+    /* ── MODAL OVERLAY ── */
+    .modal-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.25);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .modal {
+      background: #fff; border: 2px solid #333;
+      border-radius: 6px; padding: 22px;
+    }
+    .modal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .modal-title { font-size: 14px; font-weight: 700; color: #1a1a1a; }
+    .close-btn {
+      width: 22px; height: 22px; background: #ddd;
+      border: 1px solid #aaa; border-radius: 3px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #555;
+    }
+    .field-label { font-size: 10px; font-weight: 700; color: #555; display: block; margin-bottom: 4px; }
+    .field-label .opt { font-weight: 400; color: #aaa; }
+    .input-field {
+      width: 100%; height: 34px;
+      background: #f5f5f5; border: 1.5px solid #bbb; border-radius: 4px;
+      display: flex; align-items: center; padding: 0 10px;
+      font-size: 11px; color: #333; margin-bottom: 10px;
+    }
+    .input-field.placeholder { color: #bbb; }
+    .input-field.select { justify-content: space-between; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .chip-sm {
+      display: inline-block; padding: 2px 9px;
+      background: #eee; border: 1px solid #bbb;
+      border-radius: 99px; font-size: 10px; color: #555;
+      margin-right: 4px; margin-bottom: 4px;
+    }
+    .chip-sm.active { background: #555; color: #fff; border-color: #555; }
+    .divider { height: 1px; background: #e0e0e0; margin: 12px 0; }
+    .btn-row { display: flex; gap: 8px; justify-content: flex-end; }
+    .danger-box {
+      background: #f5f5f5; border: 1.5px solid #ccc;
+      border-radius: 4px; padding: 14px; text-align: center;
+      margin-bottom: 14px;
+    }
+    .danger-icon {
+      width: 40px; height: 40px; background: #ddd; border-radius: 50%;
+      margin: 0 auto 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .file-preview {
+      display: flex; align-items: center; gap: 10px;
+      background: #f0f0f0; border: 1.5px solid #ccc;
+      border-radius: 4px; padding: 8px 12px; margin-bottom: 10px;
+    }
+    .file-preview-icon {
+      width: 28px; height: 34px;
+      background: #ccc; border: 1px solid #aaa; border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 7px; color: #666; flex-shrink: 0;
+    }
+
+    /* ── MOBILE ELEMENTS ── */
+    .status-bar {
+      height: 20px; background: #f0f0f0;
+      border-bottom: 1px solid #ccc;
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 0 14px; font-size: 9px; color: #555;
+    }
+    .mobile-topbar {
+      height: 46px; background: #fff;
+      border-bottom: 1px solid #ddd;
+      display: flex; align-items: center;
+      padding: 0 14px; gap: 8px;
+    }
+    .back-btn { width: 22px; height: 22px; background: #ddd; border-radius: 3px; flex-shrink: 0; }
+    .mobile-sheet {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: #fff;
+      border-top: 2px solid #333;
+      border-radius: 12px 12px 0 0;
+      padding: 14px 16px 20px;
+    }
+    .sheet-handle {
+      width: 36px; height: 4px; background: #ccc;
+      border-radius: 2px; margin: 0 auto 14px;
+    }
+    .mobile-list-row {
+      display: flex; align-items: center; gap: 10px;
+      padding: 9px 0; border-bottom: 1px solid #eee;
+    }
+    .mobile-file-icon {
+      width: 30px; height: 36px;
+      background: #ddd; border: 1px solid #bbb; border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 7px; color: #666; flex-shrink: 0;
+    }
+    .mobile-bottom-nav {
+      height: 54px; border-top: 1.5px solid #ccc;
+      display: flex; align-items: center; justify-content: space-around;
+    }
+    .mobile-nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+    .mobile-nav-icon { width: 20px; height: 20px; background: #ccc; border-radius: 3px; }
+    .mobile-nav-icon.active { background: #555; }
+    .mobile-nav-text { font-size: 8px; color: #999; }
+    .mobile-nav-text.active { color: #333; font-weight: 700; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════
+     WEB — SCREEN 1: UPDATE DOCUMENT
+══════════════════════════════════════════════ -->
+<div>
+  <div class="screen-label">Web — W1. Update Document (Edit Modal open)</div>
+  <div class="web-screen" style="height: 720px; display: flex;">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo"><div class="logo-icon"></div><div class="logo-text">CloudDoc</div></div>
+      <div style="flex:1; padding:10px 8px; display:flex; flex-direction:column; gap:2px;">
+        <div class="sidebar-section">Main</div>
+        <div class="nav-item"><div class="nav-icon"></div>Dashboard</div>
+        <div class="nav-item active"><div class="nav-icon active"></div>All Documents</div>
+        <div class="nav-item"><div class="nav-icon"></div>Folders</div>
+        <div class="nav-item"><div class="nav-icon"></div>Tags</div>
+        <div class="sidebar-section">Alerts</div>
+        <div class="nav-item"><div class="nav-icon"></div>Expiring Soon<span class="nav-badge">3</span></div>
+        <div class="nav-item"><div class="nav-icon"></div>Trash</div>
+      </div>
+      <div class="sidebar-storage">
+        <div class="storage-row"><span>Storage</span><span>1.9 / 5 GB</span></div>
+        <div class="storage-bar-bg"><div class="storage-bar-fill" style="width:38%;"></div></div>
+      </div>
+      <div class="sidebar-user">
+        <div class="avatar"></div>
+        <div style="flex:1;"><div style="font-size:11px;font-weight:700;color:#eee;">Angelica T.</div><div style="font-size:9px;color:#888;">Pro Plan</div></div>
+      </div>
+    </div>
+
+    <!-- Main (blurred) -->
+    <div style="flex:1; display:flex; flex-direction:column; opacity:0.35; pointer-events:none;">
+      <div class="topbar">
+        <div class="topbar-title">All Documents</div>
+        <div class="topbar-search"><div class="search-icon"></div>Search...</div>
+        <div class="btn btn-primary">+ Upload</div>
+      </div>
+      <div class="content">
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <span class="chip active">All (24)</span>
+          <span class="chip">IDs (4)</span><span class="chip">Finance (6)</span><span class="chip">Work (8)</span><span class="chip">Health (3)</span>
+        </div>
+        <div class="card">
+          <table class="table">
+            <thead><tr><th>Document</th><th>Category</th><th>Tags</th><th>Size</th><th>Uploaded</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="file-icon">PDF</div>Passport_scan.pdf</div></td><td>Identity</td><td><span class="tag">Identity</span></td><td>2.1 MB</td><td>17 Mar</td><td>12 Apr 2028</td><td><span class="tag">Valid</span></td><td>···</td></tr>
+              <tr class="highlighted"><td><div style="display:flex;align-items:center;gap:8px;"><div class="file-icon">DOC</div><strong>Employment_contract.docx</strong></div></td><td>Work</td><td><span class="tag">Work</span></td><td>540 KB</td><td>14 Mar</td><td>—</td><td><span class="tag">Valid</span></td><td><span class="action-btn active">✎</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="file-icon">PDF</div>Health_insurance.pdf</div></td><td>Health</td><td><span class="tag">Health</span></td><td>1.2 MB</td><td>10 Mar</td><td>31 Mar</td><td><span class="tag muted">Expiring</span></td><td>···</td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="file-icon">XLS</div>Tax_return_2025.xlsx</div></td><td>Finance</td><td><span class="tag">Finance</span></td><td>88 KB</td><td>5 Mar</td><td>—</td><td><span class="tag">Valid</span></td><td>···</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edit Modal overlay -->
+    <div class="modal-overlay">
+      <div class="modal" style="width:500px;">
+        <div class="modal-header">
+          <div class="modal-title">Edit Document</div>
+          <div class="close-btn">✕</div>
+        </div>
+
+        <!-- Current file -->
+        <div class="file-preview">
+          <div class="file-preview-icon">DOC</div>
+          <div style="flex:1;">
+            <div style="font-size:11px;font-weight:700;color:#1a1a1a;">Employment_contract.docx</div>
+            <div style="font-size:9px;color:#888;">Work · 540 KB · uploaded 14 Mar 2026</div>
+          </div>
+          <span class="tag">Valid</span>
+        </div>
+
+        <span class="field-label">Document Name <span style="color:#d00;font-size:10px;">*</span></span>
+        <div class="input-field">Employment Contract — Acme Corp</div>
+
+        <div class="grid-2">
+          <div>
+            <span class="field-label">Folder</span>
+            <div class="input-field select">Work Documents ▾</div>
+          </div>
+          <div>
+            <span class="field-label">Category</span>
+            <div class="input-field select">Work ▾</div>
+          </div>
+        </div>
+
+        <span class="field-label">Tags</span>
+        <div style="margin-bottom:10px;">
+          <span class="chip-sm active">Work</span>
+          <span class="chip-sm active">Legal</span>
+          <span class="chip-sm active">Employment</span>
+          <span class="chip-sm">Finance</span>
+          <span class="chip-sm">+ Add</span>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <span class="field-label">Expiry Date <span class="opt">(optional)</span></span>
+            <div class="input-field placeholder">Select date 📅</div>
+          </div>
+          <div>
+            <span class="field-label">Status</span>
+            <div class="input-field select">Valid ▾</div>
+          </div>
+        </div>
+
+        <span class="field-label">Notes <span class="opt">(optional)</span></span>
+        <div class="input-field placeholder" style="height:54px; align-items:flex-start; padding-top:8px; margin-bottom:14px;">Add a note about this document...</div>
+
+        <div class="divider" style="margin:0 0 12px;"></div>
+        <div class="btn-row">
+          <div class="btn btn-outline">Cancel</div>
+          <div class="btn btn-primary">Save Changes</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     WEB — SCREEN 2: DELETE DOCUMENT
+══════════════════════════════════════════════ -->
+<div>
+  <div class="screen-label">Web — W2. Delete Document (Confirmation Modal open)</div>
+  <div class="web-screen" style="height: 720px; display: flex;">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="sidebar-logo"><div class="logo-icon"></div><div class="logo-text">CloudDoc</div></div>
+      <div style="flex:1; padding:10px 8px; display:flex; flex-direction:column; gap:2px;">
+        <div class="sidebar-section">Main</div>
+        <div class="nav-item"><div class="nav-icon"></div>Dashboard</div>
+        <div class="nav-item active"><div class="nav-icon active"></div>All Documents</div>
+        <div class="nav-item"><div class="nav-icon"></div>Folders</div>
+        <div class="nav-item"><div class="nav-icon"></div>Tags</div>
+        <div class="sidebar-section">Alerts</div>
+        <div class="nav-item"><div class="nav-icon"></div>Expiring Soon<span class="nav-badge">3</span></div>
+        <div class="nav-item"><div class="nav-icon"></div>Trash</div>
+      </div>
+      <div class="sidebar-storage">
+        <div class="storage-row"><span>Storage</span><span>1.9 / 5 GB</span></div>
+        <div class="storage-bar-bg"><div class="storage-bar-fill" style="width:38%;"></div></div>
+      </div>
+      <div class="sidebar-user">
+        <div class="avatar"></div>
+        <div style="flex:1;"><div style="font-size:11px;font-weight:700;color:#eee;">Angelica T.</div><div style="font-size:9px;color:#888;">Pro Plan</div></div>
+      </div>
+    </div>
+
+    <!-- Main (blurred) -->
+    <div style="flex:1; display:flex; flex-direction:column; opacity:0.35; pointer-events:none;">
+      <div class="topbar">
+        <div class="topbar-title">All Documents</div>
+        <div class="topbar-search"><div class="search-icon"></div>Search...</div>
+        <div class="btn btn-primary">+ Upload</div>
+      </div>
+      <div class="content">
+        <div style="display:flex;gap:8px;margin-bottom:14px;">
+          <span class="chip active">All (24)</span>
+          <span class="chip">IDs (4)</span><span class="chip">Finance (6)</span><span class="chip">Work (8)</span><span class="chip">Health (3)</span>
+        </div>
+        <div class="card">
+          <table class="table">
+            <thead><tr><th>Document</th><th>Category</th><th>Tags</th><th>Size</th><th>Uploaded</th><th>Expiry</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="file-icon">PDF</div>Passport_scan.pdf</div></td><td>Identity</td><td><span class="tag">Identity</span></td><td>2.1 MB</td><td>17 Mar</td><td>12 Apr 2028</td><td><span class="tag">Valid</span></td><td>···</td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="file-icon">DOC</div>Employment_contract.docx</div></td><td>Work</td><td><span class="tag">Work</span></td><td>540 KB</td><td>14 Mar</td><td>—</td><td><span class="tag">Valid</span></td><td>···</td></tr>
+              <tr class="highlighted"><td><div style="display:flex;align-items:center;gap:8px;"><div class="file-icon">PDF</div><strong>Health_insurance.pdf</strong></div></td><td>Health</td><td><span class="tag">Health</span></td><td>1.2 MB</td><td>10 Mar</td><td>31 Mar</td><td><span class="tag muted">Expiring</span></td><td><span class="action-btn active">🗑</span></td></tr>
+              <tr><td><div style="display:flex;align-items:center;gap:8px;"><div class="file-icon">XLS</div>Tax_return_2025.xlsx</div></td><td>Finance</td><td><span class="tag">Finance</span></td><td>88 KB</td><td>5 Mar</td><td>—</td><td><span class="tag">Valid</span></td><td>···</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal overlay -->
+    <div class="modal-overlay">
+      <div class="modal" style="width:400px;">
+        <div class="modal-header">
+          <div class="modal-title">Delete Document</div>
+          <div class="close-btn">✕</div>
+        </div>
+
+        <div class="danger-box">
+          <div class="danger-icon">🗑</div>
+          <div style="font-size:13px;font-weight:700;color:#1a1a1a;margin-bottom:6px;">Delete this document?</div>
+          <div style="font-size:11px;color:#666;line-height:1.5;">This will permanently remove the file from your vault. This action cannot be undone.</div>
+        </div>
+
+        <!-- File being deleted -->
+        <div class="file-preview" style="margin-bottom:14px;">
+          <div class="file-preview-icon">PDF</div>
+          <div style="flex:1;">
+            <div style="font-size:11px;font-weight:700;color:#1a1a1a;">Health_insurance.pdf</div>
+            <div style="font-size:9px;color:#888;">Health · 1.2 MB · expiring 31 Mar 2026</div>
+          </div>
+        </div>
+
+        <!-- Acknowledgement checkboxes -->
+        <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px;">
+          <div style="display:flex;align-items:flex-start;gap:8px;">
+            <div style="width:14px;height:14px;border:1.5px solid #bbb;border-radius:2px;flex-shrink:0;margin-top:1px;"></div>
+            <div style="font-size:10px;color:#555;line-height:1.4;">I understand this file will be permanently deleted</div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;">
+            <div style="width:14px;height:14px;border:1.5px solid #bbb;border-radius:2px;flex-shrink:0;margin-top:1px;"></div>
+            <div style="font-size:10px;color:#555;line-height:1.4;">I have a local copy or no longer need this file</div>
+          </div>
+        </div>
+
+        <div class="divider" style="margin:0 0 12px;"></div>
+        <div class="btn-row">
+          <div class="btn btn-outline">Cancel</div>
+          <div class="btn btn-danger">Delete Document</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     MOBILE SCREENS — side by side
+══════════════════════════════════════════════ -->
+<div style="display:flex; gap:48px; align-items:flex-start;">
+
+  <!-- ── MOBILE M1: UPDATE DOCUMENT ── -->
+  <div>
+    <div class="screen-label">Mobile — M1. Update Document</div>
+    <div class="mobile-screen" style="height:760px; overflow:hidden; position:relative;">
+      <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+      <div class="mobile-topbar">
+        <div style="font-size:13px;font-weight:700;color:#1a1a1a;flex:1;">All Documents</div>
+        <div class="box" style="width:24px;height:24px;border-radius:3px;"></div>
+        <div class="box" style="width:24px;height:24px;border-radius:3px;"></div>
+      </div>
+
+      <!-- Filter chips -->
+      <div style="padding:8px 14px;display:flex;gap:6px;overflow-x:auto;opacity:0.35;">
+        <span class="chip active" style="font-size:10px;padding:3px 10px;">All</span>
+        <span class="chip" style="font-size:10px;padding:3px 10px;">IDs</span>
+        <span class="chip" style="font-size:10px;padding:3px 10px;">Finance</span>
+        <span class="chip" style="font-size:10px;padding:3px 10px;">Work</span>
+      </div>
+
+      <!-- Document list (blurred) -->
+      <div style="padding:0 14px; opacity:0.35;">
+        <div class="mobile-list-row">
+          <div class="mobile-file-icon">PDF</div>
+          <div style="flex:1;"><div style="font-size:11px;font-weight:700;">Passport_scan.pdf</div><div style="font-size:9px;color:#888;">Identity · 2.1 MB</div></div>
+          <span class="tag">Valid</span>
+        </div>
+        <div class="mobile-list-row" style="background:#f0f0f0;margin:0 -14px;padding:9px 14px;">
+          <div class="mobile-file-icon">DOC</div>
+          <div style="flex:1;"><div style="font-size:11px;font-weight:700;">Employment_contract.docx</div><div style="font-size:9px;color:#888;">Work · 540 KB</div></div>
+          <span class="action-btn active" style="width:22px;height:22px;font-size:10px;">✎</span>
+        </div>
+        <div class="mobile-list-row">
+          <div class="mobile-file-icon">PDF</div>
+          <div style="flex:1;"><div style="font-size:11px;font-weight:700;">Health_insurance.pdf</div><div style="font-size:9px;color:#888;">Health · 1.2 MB</div></div>
+          <span class="tag muted">Expiring</span>
+        </div>
+      </div>
+
+      <!-- Bottom sheet modal -->
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.2);">
+        <div class="mobile-sheet">
+          <div class="sheet-handle"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <div style="font-size:14px;font-weight:700;color:#1a1a1a;">Edit Document</div>
+            <div class="close-btn">✕</div>
+          </div>
+
+          <!-- File info -->
+          <div class="file-preview" style="margin-bottom:12px;">
+            <div class="file-preview-icon">DOC</div>
+            <div style="flex:1;">
+              <div style="font-size:10px;font-weight:700;color:#1a1a1a;">Employment_contract.docx</div>
+              <div style="font-size:8px;color:#888;">Work · 540 KB</div>
+            </div>
+            <span class="tag" style="font-size:8px;">Valid</span>
+          </div>
+
+          <span class="field-label">Document Name</span>
+          <div class="input-field" style="height:32px;font-size:10px;">Employment Contract — Acme Corp</div>
+
+          <span class="field-label">Folder</span>
+          <div class="input-field select" style="height:32px;font-size:10px;margin-bottom:10px;">Work Documents ▾</div>
+
+          <span class="field-label">Tags</span>
+          <div style="margin-bottom:10px;">
+            <span class="chip-sm active">Work</span>
+            <span class="chip-sm active">Legal</span>
+            <span class="chip-sm">+ Add</span>
+          </div>
+
+          <span class="field-label">Expiry Date <span class="opt">(optional)</span></span>
+          <div class="input-field placeholder select" style="height:32px;font-size:10px;margin-bottom:14px;">Select date 📅</div>
+
+          <div class="btn btn-primary" style="width:100%;justify-content:center;height:38px;">Save Changes</div>
+          <div style="height:8px;"></div>
+          <div class="btn btn-outline" style="width:100%;justify-content:center;height:34px;font-size:11px;">Cancel</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MOBILE M2: DELETE DOCUMENT ── -->
+  <div>
+    <div class="screen-label">Mobile — M2. Delete Document</div>
+    <div class="mobile-screen" style="height:760px; overflow:hidden; position:relative;">
+      <div class="status-bar"><span>9:41</span><span>●●●</span></div>
+      <div class="mobile-topbar">
+        <div style="font-size:13px;font-weight:700;color:#1a1a1a;flex:1;">All Documents</div>
+        <div class="box" style="width:24px;height:24px;border-radius:3px;"></div>
+        <div class="box" style="width:24px;height:24px;border-radius:3px;"></div>
+      </div>
+
+      <!-- Document list (blurred) -->
+      <div style="padding:8px 14px;display:flex;gap:6px;overflow-x:auto;opacity:0.35;">
+        <span class="chip active" style="font-size:10px;padding:3px 10px;">All</span>
+        <span class="chip" style="font-size:10px;padding:3px 10px;">IDs</span>
+        <span class="chip" style="font-size:10px;padding:3px 10px;">Finance</span>
+      </div>
+      <div style="padding:0 14px; opacity:0.35;">
+        <div class="mobile-list-row">
+          <div class="mobile-file-icon">PDF</div>
+          <div style="flex:1;"><div style="font-size:11px;font-weight:700;">Passport_scan.pdf</div><div style="font-size:9px;color:#888;">Identity · 2.1 MB</div></div>
+          <span class="tag">Valid</span>
+        </div>
+        <div class="mobile-list-row">
+          <div class="mobile-file-icon">DOC</div>
+          <div style="flex:1;"><div style="font-size:11px;font-weight:700;">Employment_contract.docx</div><div style="font-size:9px;color:#888;">Work · 540 KB</div></div>
+          <span class="tag">Valid</span>
+        </div>
+        <div class="mobile-list-row" style="background:#f0f0f0;margin:0 -14px;padding:9px 14px;">
+          <div class="mobile-file-icon">PDF</div>
+          <div style="flex:1;"><div style="font-size:11px;font-weight:700;">Health_insurance.pdf</div><div style="font-size:9px;color:#888;">Health · 1.2 MB</div></div>
+          <span class="action-btn active" style="width:22px;height:22px;font-size:9px;">🗑</span>
+        </div>
+      </div>
+
+      <!-- Bottom sheet modal -->
+      <div style="position:absolute;inset:0;background:rgba(0,0,0,0.2);">
+        <div class="mobile-sheet">
+          <div class="sheet-handle"></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <div style="font-size:14px;font-weight:700;color:#1a1a1a;">Delete Document</div>
+            <div class="close-btn">✕</div>
+          </div>
+
+          <div class="danger-box" style="margin-bottom:12px;">
+            <div class="danger-icon">🗑</div>
+            <div style="font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:5px;">Delete this document?</div>
+            <div style="font-size:10px;color:#666;line-height:1.5;">This will permanently remove the file. This action cannot be undone.</div>
+          </div>
+
+          <!-- File summary -->
+          <div class="file-preview" style="margin-bottom:12px;">
+            <div class="file-preview-icon">PDF</div>
+            <div>
+              <div style="font-size:10px;font-weight:700;color:#1a1a1a;">Health_insurance.pdf</div>
+              <div style="font-size:8px;color:#888;">Health · 1.2 MB · expires 31 Mar 2026</div>
+            </div>
+          </div>
+
+          <!-- Checkboxes -->
+          <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px;">
+            <div style="display:flex;align-items:flex-start;gap:8px;">
+              <div style="width:14px;height:14px;border:1.5px solid #bbb;border-radius:2px;flex-shrink:0;margin-top:1px;"></div>
+              <div style="font-size:10px;color:#555;">I understand this file will be permanently deleted</div>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;">
+              <div style="width:14px;height:14px;border:1.5px solid #bbb;border-radius:2px;flex-shrink:0;margin-top:1px;"></div>
+              <div style="font-size:10px;color:#555;">I no longer need this file</div>
+            </div>
+          </div>
+
+          <div class="btn btn-danger" style="width:100%;justify-content:center;height:38px;">Delete Document</div>
+          <div style="height:8px;"></div>
+          <div class="btn btn-outline" style="width:100%;justify-content:center;height:34px;font-size:11px;">Cancel</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

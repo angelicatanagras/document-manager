@@ -1,3 +1,7 @@
+# Uploaded files (local storage)
+backend/uploads/*
+!backend/uploads/.gitkeep
+
 # Logs
 logs
 *.log

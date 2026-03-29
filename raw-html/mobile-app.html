@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1.0">
+<title>DocVault Mobile</title>
+<script src="https://mcp.figma.com/mcp/html-to-design/capture.js" async></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; }
+
+  :root {
+    --primary: #0F766E;
+    --teal: #14B8A6;
+    --teal-light: #CCFBF1;
+    --teal-50: #F0FDFA;
+    --sidebar: #1E293B;
+    --text: #1E293B;
+    --muted: #64748B;
+    --border: #E2E8F0;
+    --bg: #F8FAFC;
+    --white: #FFFFFF;
+    --success: #16A34A;
+    --warning: #D97706;
+    --danger: #EF4444;
+    --amber-bg: #FFFBEB;
+    --green-bg: #F0FDF4;
+    --red-bg: #FEF2F2;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #E5E7EB;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding: 40px;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  /* Phone frame */
+  .phone-frame {
+    width: 390px;
+    height: 844px;
+    background: var(--bg);
+    border-radius: 44px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 0 0 12px #1a1a1a, 0 0 0 14px #333, 0 30px 80px rgba(0,0,0,0.35);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Notch */
+  .notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 126px;
+    height: 37px;
+    background: #1a1a1a;
+    border-radius: 0 0 22px 22px;
+    z-index: 100;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 54px;
+    background: var(--white);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 24px 10px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 50;
+  }
+  .status-bar.dark {
+    background: var(--sidebar);
+  }
+  .status-bar.dark .status-time { color: #fff; }
+  .status-bar.dark .status-icons { color: #fff; }
+  .status-time {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .status-icons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text);
+  }
+  .status-icons svg { width: 16px; height: 16px; }
+
+  /* Screen content */
+  .screen {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Screen label */
+  .screen-label {
+    text-align: center;
+    margin-bottom: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ============ DASHBOARD ============ */
+  .dash-header {
+    background: var(--white);
+    padding: 16px 20px 14px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+  .dash-header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .dash-greeting { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.4px; }
+  .dash-subtext { font-size: 12px; color: var(--muted); font-weight: 400; margin-top: 1px; }
+  .avatar-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: linear-gradient(135deg, #0F766E, #14B8A6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: #fff;
+  }
+  .search-bar {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 9px 12px;
+  }
+  .search-bar svg { width: 15px; height: 15px; color: var(--muted); flex-shrink: 0; }
+  .search-bar span { font-size: 13px; color: var(--muted); }
+
+  .dash-scroll { flex: 1; overflow-y: auto; padding: 16px 20px 80px; }
+
+  .alert-banner {
+    background: var(--amber-bg); border: 1px solid #FDE68A;
+    border-radius: 10px; padding: 11px 14px; margin-bottom: 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .alert-icon { font-size: 16px; flex-shrink: 0; }
+  .alert-text { font-size: 12px; color: #92400E; font-weight: 500; line-height: 1.4; }
+  .alert-text strong { font-weight: 700; display: block; font-size: 12.5px; }
+
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .section-title { font-size: 14px; font-weight: 700; color: var(--text); letter-spacing: -0.2px; }
+  .see-all { font-size: 12px; font-weight: 600; color: var(--primary); }
+
+  /* Quick actions grid */
+  .quick-actions {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 8px; margin-bottom: 20px;
+  }
+  .qa-item {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    text-align: center;
+  }
+  .qa-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px;
+  }
+  .qa-icon.teal { background: var(--teal-light); }
+  .qa-icon.blue { background: #EFF6FF; }
+  .qa-icon.green { background: var(--green-bg); }
+  .qa-icon.amber { background: var(--amber-bg); }
+  .qa-label { font-size: 10.5px; font-weight: 600; color: var(--text); line-height: 1.2; }
+
+  /* Stats row */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-bottom: 20px;
+  }
+  .stat-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 14px 12px;
+  }
+  .stat-num { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.8px; }
+  .stat-label { font-size: 10.5px; color: var(--muted); font-weight: 500; margin-top: 2px; }
+  .stat-badge { display: inline-block; font-size: 9px; font-weight: 600; padding: 2px 5px; border-radius: 4px; margin-top: 4px; }
+  .stat-badge.warning { background: var(--amber-bg); color: var(--warning); }
+  .stat-badge.success { background: var(--green-bg); color: var(--success); }
+
+  /* Doc list item */
+  .doc-list { display: flex; flex-direction: column; gap: 8px; }
+  .doc-item {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 12px 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .doc-icon {
+    width: 38px; height: 44px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.3px;
+    position: relative; flex-shrink: 0;
+  }
+  .doc-icon::after {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 10px; height: 10px; border-radius: 0 6px 0 6px;
+    background: rgba(255,255,255,0.4);
+  }
+  .doc-icon.pdf { background: #FEF2F2; color: #EF4444; }
+  .doc-icon.docx { background: #EFF6FF; color: #2563EB; }
+  .doc-icon.jpg { background: #EFF6FF; color: #3B82F6; }
+  .doc-icon.xlsx { background: #F0FDF4; color: #16A34A; }
+  .doc-icon.png { background: #F5F3FF; color: #7C3AED; }
+
+  .doc-info { flex: 1; min-width: 0; }
+  .doc-name { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
+  .doc-meta { font-size: 11px; color: var(--muted); font-weight: 400; }
+  .doc-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+  .status-pill {
+    font-size: 9.5px; font-weight: 600; padding: 3px 7px; border-radius: 5px; letter-spacing: 0.1px;
+  }
+  .status-pill.active { background: var(--green-bg); color: var(--success); }
+  .status-pill.expiring { background: var(--amber-bg); color: var(--warning); }
+  .status-pill.expired { background: var(--red-bg); color: var(--danger); }
+  .doc-time { font-size: 10px; color: var(--muted); }
+  .doc-chevron { color: #CBD5E1; }
+
+  /* ============ BOTTOM NAV ============ */
+  .bottom-nav {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 82px;
+    background: var(--white);
+    border-top: 1px solid var(--border);
+    display: flex; align-items: flex-start; padding-top: 10px;
+    z-index: 100;
+  }
+  .nav-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding-top: 2px; cursor: pointer;
+  }
+  .nav-icon { width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; }
+  .nav-icon svg { width: 22px; height: 22px; }
+  .nav-label { font-size: 10px; font-weight: 500; color: var(--muted); }
+  .nav-item.active .nav-label { color: var(--primary); font-weight: 600; }
+  .nav-item.active .nav-icon svg { color: var(--primary); }
+  .nav-item .nav-icon svg { color: var(--muted); }
+
+  .nav-upload-btn {
+    flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding-top: 0;
+    position: relative; top: -18px;
+  }
+  .upload-circle {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--primary); display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 14px rgba(15, 118, 110, 0.45);
+  }
+  .upload-circle svg { width: 24px; height: 24px; color: #fff; }
+  .nav-upload-btn .nav-label { font-size: 10px; font-weight: 600; color: var(--primary); }
+
+  /* ============ DOCUMENTS SCREEN ============ */
+  .docs-header {
+    background: var(--white); padding: 16px 20px 0;
+    border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .docs-header-row {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+  }
+  .docs-title { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 9px;
+    border: 1.5px solid var(--border); background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .icon-btn svg { width: 16px; height: 16px; color: var(--muted); }
+
+  .search-bar2 {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 10px; padding: 9px 12px; margin-bottom: 14px;
+  }
+  .search-bar2 svg { width: 15px; height: 15px; color: var(--muted); }
+  .search-bar2 span { font-size: 13px; color: var(--muted); }
+
+  .filter-tabs {
+    display: flex; gap: 6px; overflow-x: auto; padding-bottom: 14px;
+    scrollbar-width: none;
+  }
+  .filter-tab {
+    flex-shrink: 0; padding: 5px 12px; border-radius: 20px;
+    font-size: 12px; font-weight: 500; color: var(--muted);
+    border: 1.5px solid var(--border); background: var(--white);
+    white-space: nowrap;
+  }
+  .filter-tab.active {
+    background: var(--teal-light); border-color: var(--teal); color: var(--primary); font-weight: 600;
+  }
+
+  .docs-scroll { flex: 1; overflow-y: auto; padding: 14px 20px 80px; }
+
+  .doc-item-row {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 12px; padding: 13px 14px;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  /* ============ UPLOAD SCREEN ============ */
+  .upload-header {
+    background: var(--white); padding: 16px 20px;
+    border-bottom: 1px solid var(--border); flex-shrink: 0;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .back-btn {
+    width: 34px; height: 34px; border-radius: 9px;
+    border: 1.5px solid var(--border); background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .back-btn svg { width: 18px; height: 18px; color: var(--text); }
+  .upload-title { font-size: 18px; font-weight: 700; color: var(--text); letter-spacing: -0.4px; }
+  .upload-scroll { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+
+  .upload-zone {
+    border: 2px dashed var(--teal); border-radius: 16px;
+    background: var(--teal-50); padding: 32px 20px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center;
+  }
+  .upload-zone-icon {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: var(--teal-light); display: flex; align-items: center; justify-content: center;
+    font-size: 26px; margin-bottom: 4px;
+  }
+  .upload-zone-title { font-size: 15px; font-weight: 700; color: var(--primary); letter-spacing: -0.2px; }
+  .upload-zone-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .file-types { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 4px; }
+  .file-type-pill {
+    font-size: 10px; font-weight: 600; padding: 3px 8px; border-radius: 5px;
+    background: var(--teal-light); color: var(--primary);
+  }
+  .upload-btn-row { display: flex; gap: 8px; width: 100%; margin-top: 6px; }
+  .btn-primary {
+    flex: 1; height: 42px; border-radius: 10px; background: var(--primary);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 13px; font-weight: 600; color: #fff;
+  }
+  .btn-ghost {
+    flex: 1; height: 42px; border-radius: 10px; background: var(--white);
+    border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-size: 13px; font-weight: 600; color: var(--text);
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label { font-size: 12.5px; font-weight: 600; color: var(--text); }
+  .form-input {
+    height: 42px; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 0 12px; font-size: 13px; color: var(--text); background: var(--white);
+    display: flex; align-items: center;
+  }
+  .form-input span { color: var(--muted); }
+  .form-select {
+    height: 42px; border: 1.5px solid var(--border); border-radius: 10px;
+    padding: 0 12px; font-size: 13px; color: var(--text); background: var(--white);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .form-section-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+
+  .submit-btn {
+    height: 50px; border-radius: 12px; background: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700; color: #fff; letter-spacing: -0.2px;
+    box-shadow: 0 4px 14px rgba(15, 118, 110, 0.35); margin-top: 4px;
+  }
+
+  /* ============ DOCUMENT DETAIL ============ */
+  .detail-header {
+    background: var(--sidebar); padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+  .detail-header .back-btn { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); }
+  .detail-header .back-btn svg { color: #fff; }
+  .detail-header-title { font-size: 16px; font-weight: 600; color: #fff; letter-spacing: -0.3px; }
+  .detail-header .icon-btn { border-color: rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); }
+  .detail-header .icon-btn svg { color: #fff; }
+
+  .detail-doc-preview {
+    background: var(--sidebar); padding: 20px; padding-top: 0;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    flex-shrink: 0;
+  }
+  .detail-doc-icon {
+    width: 72px; height: 84px; background: #FEF2F2; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: #EF4444; position: relative;
+  }
+  .detail-doc-icon::after {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 16px; height: 16px; border-radius: 0 10px 0 10px;
+    background: rgba(255,255,255,0.4);
+  }
+  .detail-doc-name { font-size: 16px; font-weight: 700; color: #fff; text-align: center; letter-spacing: -0.3px; }
+  .detail-doc-size { font-size: 12px; color: rgba(255,255,255,0.55); }
+
+  .detail-scroll { flex: 1; overflow-y: auto; background: var(--bg); }
+  .detail-actions {
+    display: flex; gap: 8px; padding: 16px 20px;
+    border-bottom: 1px solid var(--border); background: var(--white);
+  }
+  .action-btn {
+    flex: 1; height: 40px; border-radius: 9px; border: 1.5px solid var(--border);
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    font-size: 12px; font-weight: 600; color: var(--text); background: var(--white);
+  }
+  .action-btn svg { width: 15px; height: 15px; color: var(--muted); }
+  .action-btn.primary-action { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .action-btn.primary-action svg { color: #fff; }
+
+  .detail-info-section { padding: 16px 20px; background: var(--white); margin-bottom: 8px; }
+  .detail-info-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 12px; }
+  .detail-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 0; border-bottom: 1px solid var(--bg);
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-row-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+  .detail-row-value { font-size: 13px; color: var(--text); font-weight: 600; text-align: right; }
+  .detail-row-value.warning { color: var(--warning); }
+  .detail-row-value.danger { color: var(--danger); }
+
+  .version-item {
+    display: flex; align-items: center; gap: 12px; padding: 10px 0;
+    border-bottom: 1px solid var(--bg);
+  }
+  .version-item:last-child { border-bottom: none; }
+  .version-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0;
+  }
+  .version-dot.muted { background: var(--border); }
+  .version-info { flex: 1; }
+  .version-name { font-size: 13px; font-weight: 600; color: var(--text); }
+  .version-date { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .version-badge { font-size: 9.5px; font-weight: 600; padding: 2px 6px; border-radius: 4px; background: var(--teal-light); color: var(--primary); }
+
+  /* ============ FOLDERS SCREEN ============ */
+  .folders-header {
+    background: var(--white); padding: 16px 20px 14px;
+    border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .folders-title { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; margin-bottom: 14px; }
+  .folder-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 16px 20px 80px; flex: 1; overflow-y: auto; }
+  .folder-card {
+    background: var(--white); border: 1px solid var(--border);
+    border-radius: 14px; padding: 16px 14px;
+  }
+  .folder-card-icon { font-size: 28px; margin-bottom: 10px; }
+  .folder-card-name { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+  .folder-card-count { font-size: 11px; color: var(--muted); font-weight: 500; }
+  .folder-card-bar { height: 3px; border-radius: 2px; background: var(--border); margin-top: 10px; overflow: hidden; }
+  .folder-card-fill { height: 100%; border-radius: 2px; }
+
+  /* ============ PROFILE SCREEN ============ */
+  .profile-header {
+    background: var(--sidebar); padding: 20px 20px 28px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  .profile-avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, #0F766E, #14B8A6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; font-weight: 700; color: #fff;
+    border: 3px solid rgba(255,255,255,0.2);
+  }
+  .profile-name { font-size: 20px; font-weight: 700; color: #fff; letter-spacing: -0.4px; }
+  .profile-email { font-size: 13px; color: rgba(255,255,255,0.55); }
+  .profile-plan {
+    background: var(--teal-light); color: var(--primary);
+    font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 20px; margin-top: 2px;
+  }
+
+  .profile-scroll { flex: 1; overflow-y: auto; padding-bottom: 80px; }
+  .profile-section { background: var(--white); margin-bottom: 8px; }
+  .profile-section-title {
+    font-size: 11px; font-weight: 600; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    padding: 14px 20px 8px;
+  }
+  .profile-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 20px; border-bottom: 1px solid var(--bg);
+  }
+  .profile-item:last-child { border-bottom: none; }
+  .profile-item-icon {
+    width: 34px; height: 34px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; flex-shrink: 0;
+  }
+  .profile-item-text { flex: 1; }
+  .profile-item-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .profile-item-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+  .profile-item-right { color: #CBD5E1; font-size: 16px; }
+
+  .storage-section { padding: 16px 20px; background: var(--white); margin-bottom: 8px; }
+  .storage-bar-outer { height: 8px; border-radius: 4px; background: var(--border); margin: 10px 0 6px; overflow: hidden; }
+  .storage-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, #0F766E, #14B8A6); width: 38%; }
+  .storage-text { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--muted); font-weight: 500; }
+
+  .logout-btn {
+    margin: 0 20px 20px; height: 48px; border-radius: 12px;
+    border: 1.5px solid #FEE2E2; background: #FFF5F5;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 14px; font-weight: 600; color: var(--danger);
+  }
+</style>
+</head>
+<body>
+
+<!-- SCREEN 1: DASHBOARD -->
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+  <div class="screen-label">Dashboard</div>
+  <div class="phone-frame">
+    <div class="notch"></div>
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10L1.5 8.5z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13l-1.5-1.5z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2l-1.5-1.5z"/><circle cx="12" cy="19" r="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2" ry="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg>
+      </div>
+    </div>
+
+    <div class="screen" style="position:relative">
+      <!-- Header -->
+      <div class="dash-header">
+        <div class="dash-header-row">
+          <div>
+            <div class="dash-greeting">Good morning, Angelica 👋</div>
+            <div class="dash-subtext">Wednesday, 18 March 2026</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="position:relative">
+              <div class="icon-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+              </div>
+              <div style="position:absolute;top:-3px;right:-3px;width:9px;height:9px;border-radius:50%;background:#F97316;border:1.5px solid #fff"></div>
+            </div>
+            <div class="avatar-btn">AT</div>
+          </div>
+        </div>
+        <div class="search-bar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span>Search documents...</span>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="dash-scroll">
+        <!-- Alert -->
+        <div class="alert-banner">
+          <span class="alert-icon">⚠️</span>
+          <div class="alert-text">
+            <strong>3 documents expiring soon</strong>
+            Review and renew before they expire
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <div class="stat-num">24</div>
+            <div class="stat-label">Total docs</div>
+            <div class="stat-badge success">↑ 2 new</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">3</div>
+            <div class="stat-label">Expiring</div>
+            <div class="stat-badge warning">Soon</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-num">1.9 GB</div>
+            <div class="stat-label">Used</div>
+            <div class="stat-badge success">of 5 GB</div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="section-header">
+          <div class="section-title">Quick Actions</div>
+        </div>
+        <div class="quick-actions">
+          <div class="qa-item">
+            <div class="qa-icon teal">📤</div>
+            <div class="qa-label">Upload Doc</div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-icon blue">📁</div>
+            <div class="qa-label">Folders</div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-icon green">🔍</div>
+            <div class="qa-label">Search</div>
+          </div>
+          <div class="qa-item">
+            <div class="qa-icon amber">⏰</div>
+            <div class="qa-label">Expiring</div>
+          </div>
+        </div>
+
+        <!-- Recent -->
+        <div class="section-header">
+          <div class="section-title">Recent Documents</div>
+          <div class="see-all">See all</div>
+        </div>
+        <div class="doc-list">
+          <div class="doc-item">
+            <div class="doc-icon pdf">PDF</div>
+            <div class="doc-info">
+              <div class="doc-name">Passport_Scan_2024.pdf</div>
+              <div class="doc-meta">2.4 MB · Identity · Today</div>
+            </div>
+            <div class="doc-right">
+              <div class="status-pill expiring">Expiring</div>
+              <div class="doc-time">2h ago</div>
+            </div>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon docx">DOC</div>
+            <div class="doc-info">
+              <div class="doc-name">Employment_Contract.docx</div>
+              <div class="doc-meta">890 KB · Work · Yesterday</div>
+            </div>
+            <div class="doc-right">
+              <div class="status-pill active">Active</div>
+              <div class="doc-time">1d ago</div>
+            </div>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon xlsx">XLS</div>
+            <div class="doc-info">
+              <div class="doc-name">Tax_Returns_2025.xlsx</div>
+              <div class="doc-meta">1.2 MB · Finance · Mar 15</div>
+            </div>
+            <div class="doc-right">
+              <div class="status-pill active">Active</div>
+              <div class="doc-time">3d ago</div>
+            </div>
+          </div>
+          <div class="doc-item">
+            <div class="doc-icon jpg">JPG</div>
+            <div class="doc-info">
+              <div class="doc-name">Insurance_Card_Front.jpg</div>
+              <div class="doc-meta">540 KB · Health · Mar 12</div>
+            </div>
+            <div class="doc-right">
+              <div class="status-pill expired">Expired</div>
+              <div class="doc-time">6d ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item active">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          </div>
+          <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>
+          </div>
+          <span class="nav-label">Docs</span>
+        </div>
+        <div class="nav-upload-btn">
+          <div class="upload-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+          <span class="nav-label">Upload</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><polyline points="9 9 12 9 12 13"/></svg>
+          </div>
+          <span class="nav-label">Folders</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          </div>
+          <span class="nav-label">Profile</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 2: ALL DOCUMENTS -->
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+  <div class="screen-label">All Documents</div>
+  <div class="phone-frame">
+    <div class="notch"></div>
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10L1.5 8.5z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13l-1.5-1.5z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2l-1.5-1.5z"/><circle cx="12" cy="19" r="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2" ry="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg>
+      </div>
+    </div>
+
+    <div class="screen" style="position:relative">
+      <!-- Docs Header -->
+      <div class="docs-header">
+        <div class="docs-header-row">
+          <div class="docs-title">All Documents</div>
+          <div style="display:flex;gap:8px">
+            <div class="icon-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </div>
+            <div class="icon-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            </div>
+          </div>
+        </div>
+        <div class="search-bar2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span>Search 24 documents...</span>
+        </div>
+        <div class="filter-tabs">
+          <div class="filter-tab active">All (24)</div>
+          <div class="filter-tab">PDFs (8)</div>
+          <div class="filter-tab">Docs (5)</div>
+          <div class="filter-tab">Images (6)</div>
+          <div class="filter-tab">Sheets (5)</div>
+          <div class="filter-tab">Expiring (3)</div>
+        </div>
+      </div>
+
+      <!-- Docs List -->
+      <div class="docs-scroll">
+        <div style="font-size:11px;font-weight:500;color:var(--muted);margin-bottom:10px">24 documents · Sorted by date</div>
+
+        <div class="doc-item-row">
+          <div class="doc-icon pdf">PDF</div>
+          <div class="doc-info">
+            <div class="doc-name">Passport_Scan_2024.pdf</div>
+            <div class="doc-meta">2.4 MB · Identity · 18 Mar 2026</div>
+          </div>
+          <div class="doc-right">
+            <div class="status-pill expiring">Expiring</div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2" style="width:16px;height:16px;margin-top:2px"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <div class="doc-item-row">
+          <div class="doc-icon docx">DOC</div>
+          <div class="doc-info">
+            <div class="doc-name">Employment_Contract.docx</div>
+            <div class="doc-meta">890 KB · Work · 17 Mar 2026</div>
+          </div>
+          <div class="doc-right">
+            <div class="status-pill active">Active</div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2" style="width:16px;height:16px;margin-top:2px"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <div class="doc-item-row">
+          <div class="doc-icon xlsx">XLS</div>
+          <div class="doc-info">
+            <div class="doc-name">Tax_Returns_2025.xlsx</div>
+            <div class="doc-meta">1.2 MB · Finance · 15 Mar 2026</div>
+          </div>
+          <div class="doc-right">
+            <div class="status-pill active">Active</div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2" style="width:16px;height:16px;margin-top:2px"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <div class="doc-item-row">
+          <div class="doc-icon jpg">JPG</div>
+          <div class="doc-info">
+            <div class="doc-name">Insurance_Card_Front.jpg</div>
+            <div class="doc-meta">540 KB · Health · 12 Mar 2026</div>
+          </div>
+          <div class="doc-right">
+            <div class="status-pill expired">Expired</div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2" style="width:16px;height:16px;margin-top:2px"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <div class="doc-item-row">
+          <div class="doc-icon pdf">PDF</div>
+          <div class="doc-info">
+            <div class="doc-name">Rental_Agreement_2026.pdf</div>
+            <div class="doc-meta">1.8 MB · Property · 10 Mar 2026</div>
+          </div>
+          <div class="doc-right">
+            <div class="status-pill expiring">Expiring</div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2" style="width:16px;height:16px;margin-top:2px"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <div class="doc-item-row">
+          <div class="doc-icon png">PNG</div>
+          <div class="doc-info">
+            <div class="doc-name">Drivers_License_Scan.png</div>
+            <div class="doc-meta">620 KB · Identity · 8 Mar 2026</div>
+          </div>
+          <div class="doc-right">
+            <div class="status-pill active">Active</div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2" style="width:16px;height:16px;margin-top:2px"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+
+        <div class="doc-item-row">
+          <div class="doc-icon docx">DOC</div>
+          <div class="doc-info">
+            <div class="doc-name">Medical_History.docx</div>
+            <div class="doc-meta">430 KB · Health · 5 Mar 2026</div>
+          </div>
+          <div class="doc-right">
+            <div class="status-pill active">Active</div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#CBD5E1" stroke-width="2" style="width:16px;height:16px;margin-top:2px"><polyline points="9 18 15 12 9 6"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item active">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
+          <span class="nav-label">Docs</span>
+        </div>
+        <div class="nav-upload-btn">
+          <div class="upload-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          <span class="nav-label">Upload</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><polyline points="9 9 12 9 12 13"/></svg></div>
+          <span class="nav-label">Folders</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <span class="nav-label">Profile</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 3: UPLOAD -->
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+  <div class="screen-label">Upload Document</div>
+  <div class="phone-frame">
+    <div class="notch"></div>
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10L1.5 8.5z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13l-1.5-1.5z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2l-1.5-1.5z"/><circle cx="12" cy="19" r="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2" ry="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg>
+      </div>
+    </div>
+
+    <div class="screen">
+      <div class="upload-header">
+        <div class="back-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </div>
+        <div class="upload-title">Upload Document</div>
+      </div>
+
+      <div class="upload-scroll">
+        <!-- Drop zone -->
+        <div class="upload-zone">
+          <div class="upload-zone-icon">📤</div>
+          <div class="upload-zone-title">Drop your file here</div>
+          <div class="upload-zone-sub">or use the buttons below to choose a file or take a photo</div>
+          <div class="file-types">
+            <span class="file-type-pill">PDF</span>
+            <span class="file-type-pill">JPG</span>
+            <span class="file-type-pill">DOCX</span>
+            <span class="file-type-pill">XLSX</span>
+            <span class="file-type-pill">PNG</span>
+            <span class="file-type-pill">Max 50 MB</span>
+          </div>
+          <div class="upload-btn-row">
+            <div class="btn-primary">📎 Choose file</div>
+            <div class="btn-ghost">📷 Camera</div>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="form-section-title">Document Details</div>
+
+        <div class="form-group">
+          <div class="form-label">Document Name</div>
+          <div class="form-input"><span>e.g. Passport_Scan_2024</span></div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">Category / Folder</div>
+          <div class="form-select">
+            <span style="color:var(--muted)">Select a folder...</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;color:var(--muted)"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">Expiry Date <span style="color:var(--muted);font-weight:400">(optional)</span></div>
+          <div class="form-input"><span>Select date...</span></div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label">Tags <span style="color:var(--muted);font-weight:400">(optional)</span></div>
+          <div class="form-input"><span>Add tags...</span></div>
+        </div>
+
+        <div class="submit-btn">Upload Document</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 4: DOCUMENT DETAIL -->
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+  <div class="screen-label">Document Detail</div>
+  <div class="phone-frame">
+    <div class="notch"></div>
+    <div class="status-bar dark">
+      <span class="status-time" style="color:#fff">9:41</span>
+      <div class="status-icons" style="color:#fff">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10L1.5 8.5z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13l-1.5-1.5z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2l-1.5-1.5z"/><circle cx="12" cy="19" r="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2" ry="2"/><path d="M22 11v3" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/><rect x="4" y="9" width="11" height="7" rx="1" fill="rgba(30,41,59,0.9)"/></svg>
+      </div>
+    </div>
+
+    <div class="screen">
+      <div class="detail-header">
+        <div class="back-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </div>
+        <div class="detail-header-title">Document Details</div>
+        <div class="icon-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+        </div>
+      </div>
+
+      <div class="detail-doc-preview">
+        <div class="detail-doc-icon">PDF</div>
+        <div class="detail-doc-name">Passport_Scan_2024.pdf</div>
+        <div class="detail-doc-size">2.4 MB · Uploaded 18 Mar 2026</div>
+        <div class="status-pill expiring" style="margin-top:4px">⚠ Expiring in 42 days</div>
+      </div>
+
+      <div class="detail-scroll">
+        <!-- Actions -->
+        <div class="detail-actions">
+          <div class="action-btn primary-action">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download
+          </div>
+          <div class="action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Share
+          </div>
+          <div class="action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Rename
+          </div>
+          <div class="action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+            <span style="color:#EF4444">Delete</span>
+          </div>
+        </div>
+
+        <!-- Info -->
+        <div class="detail-info-section">
+          <div class="detail-info-title">Document Info</div>
+          <div class="detail-row">
+            <span class="detail-row-label">File type</span>
+            <span class="detail-row-value">PDF Document</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-row-label">File size</span>
+            <span class="detail-row-value">2.4 MB</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-row-label">Category</span>
+            <span class="detail-row-value">Identity</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-row-label">Uploaded</span>
+            <span class="detail-row-value">18 Mar 2026</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-row-label">Expiry date</span>
+            <span class="detail-row-value warning">29 Apr 2026</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-row-label">Status</span>
+            <div class="status-pill expiring">Expiring Soon</div>
+          </div>
+        </div>
+
+        <!-- Version history -->
+        <div class="detail-info-section">
+          <div class="detail-info-title">Version History</div>
+          <div class="version-item">
+            <div class="version-dot"></div>
+            <div class="version-info">
+              <div class="version-name">Version 2 (Current)</div>
+              <div class="version-date">18 Mar 2026 · 2.4 MB</div>
+            </div>
+            <div class="version-badge">Latest</div>
+          </div>
+          <div class="version-item">
+            <div class="version-dot muted"></div>
+            <div class="version-info">
+              <div class="version-name">Version 1</div>
+              <div class="version-date">12 Jan 2025 · 2.1 MB</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item active">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
+          <span class="nav-label">Docs</span>
+        </div>
+        <div class="nav-upload-btn">
+          <div class="upload-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          <span class="nav-label">Upload</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><polyline points="9 9 12 9 12 13"/></svg></div>
+          <span class="nav-label">Folders</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <span class="nav-label">Profile</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 5: FOLDERS -->
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+  <div class="screen-label">Folders</div>
+  <div class="phone-frame">
+    <div class="notch"></div>
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10L1.5 8.5z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13l-1.5-1.5z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2l-1.5-1.5z"/><circle cx="12" cy="19" r="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2" ry="2"/><path d="M22 11v3" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/><rect x="4" y="9" width="11" height="7" rx="1" fill="white" opacity="0.9"/></svg>
+      </div>
+    </div>
+
+    <div class="screen" style="position:relative">
+      <div class="folders-header">
+        <div class="folders-title">Folders</div>
+        <div class="search-bar2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          <span>Search folders...</span>
+        </div>
+      </div>
+
+      <div class="folder-grid">
+        <div class="folder-card">
+          <div class="folder-card-icon">🪪</div>
+          <div class="folder-card-name">Identity</div>
+          <div class="folder-card-count">4 documents</div>
+          <div class="folder-card-bar"><div class="folder-card-fill" style="width:40%;background:#14B8A6"></div></div>
+        </div>
+        <div class="folder-card">
+          <div class="folder-card-icon">💼</div>
+          <div class="folder-card-name">Work</div>
+          <div class="folder-card-count">6 documents</div>
+          <div class="folder-card-bar"><div class="folder-card-fill" style="width:60%;background:#3B82F6"></div></div>
+        </div>
+        <div class="folder-card">
+          <div class="folder-card-icon">🏠</div>
+          <div class="folder-card-name">Property</div>
+          <div class="folder-card-count">3 documents</div>
+          <div class="folder-card-bar"><div class="folder-card-fill" style="width:30%;background:#8B5CF6"></div></div>
+        </div>
+        <div class="folder-card">
+          <div class="folder-card-icon">💰</div>
+          <div class="folder-card-name">Finance</div>
+          <div class="folder-card-count">5 documents</div>
+          <div class="folder-card-bar"><div class="folder-card-fill" style="width:50%;background:#16A34A"></div></div>
+        </div>
+        <div class="folder-card">
+          <div class="folder-card-icon">🏥</div>
+          <div class="folder-card-name">Health</div>
+          <div class="folder-card-count">3 documents</div>
+          <div class="folder-card-bar"><div class="folder-card-fill" style="width:30%;background:#EF4444"></div></div>
+        </div>
+        <div class="folder-card">
+          <div class="folder-card-icon">🎓</div>
+          <div class="folder-card-name">Education</div>
+          <div class="folder-card-count">2 documents</div>
+          <div class="folder-card-bar"><div class="folder-card-fill" style="width:20%;background:#F59E0B"></div></div>
+        </div>
+        <div class="folder-card">
+          <div class="folder-card-icon">✈️</div>
+          <div class="folder-card-name">Travel</div>
+          <div class="folder-card-count">1 document</div>
+          <div class="folder-card-bar"><div class="folder-card-fill" style="width:10%;background:#06B6D4"></div></div>
+        </div>
+        <div class="folder-card" style="border:1.5px dashed var(--border);background:transparent;display:flex;align-items:center;justify-content:center">
+          <div style="text-align:center">
+            <div style="font-size:24px;margin-bottom:6px">➕</div>
+            <div style="font-size:12px;font-weight:600;color:var(--primary)">New Folder</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
+          <span class="nav-label">Docs</span>
+        </div>
+        <div class="nav-upload-btn">
+          <div class="upload-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          <span class="nav-label">Upload</span>
+        </div>
+        <div class="nav-item active">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><polyline points="9 9 12 9 12 13"/></svg></div>
+          <span class="nav-label">Folders</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <span class="nav-label">Profile</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 6: PROFILE -->
+<div style="display:flex;flex-direction:column;align-items:center;gap:10px">
+  <div class="screen-label">Profile</div>
+  <div class="phone-frame">
+    <div class="notch"></div>
+    <div class="status-bar dark">
+      <span class="status-time" style="color:#fff">9:41</span>
+      <div class="status-icons" style="color:#fff">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 10.5 2.5 12 2.5s6.5 2 10.5 6l-1.5 1.5C18 7 15.5 5 12 5S6 7 3 10L1.5 8.5z"/><path d="M4.5 11.5C7.5 8.5 10 7 12 7s4.5 1.5 7.5 4.5L18 13c-2-2-4-3.5-6-3.5S8 11 6 13l-1.5-1.5z"/><path d="M7.5 14.5C9.5 12.5 11 11.5 12 11.5s2.5 1 4.5 3L15 16c-1.5-1.5-2.5-2-3-2s-1.5.5-3 2l-1.5-1.5z"/><circle cx="12" cy="19" r="1.5"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2" ry="2"/><path d="M22 11v3" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/><rect x="4" y="9" width="11" height="7" rx="1" fill="rgba(30,41,59,0.9)"/></svg>
+      </div>
+    </div>
+
+    <div class="screen">
+      <div class="profile-header">
+        <div class="profile-avatar">AT</div>
+        <div class="profile-name">Angelica T.</div>
+        <div class="profile-email">angelica@example.com</div>
+        <div class="profile-plan">Personal Account</div>
+      </div>
+
+      <div class="profile-scroll">
+        <!-- Storage -->
+        <div class="storage-section">
+          <div class="section-title">Storage</div>
+          <div class="storage-bar-outer">
+            <div class="storage-bar-fill"></div>
+          </div>
+          <div class="storage-text">
+            <span>1.9 GB used</span>
+            <span>5 GB total · 38% used</span>
+          </div>
+        </div>
+
+        <!-- Account section -->
+        <div class="profile-section">
+          <div class="profile-section-title">Account</div>
+          <div class="profile-item">
+            <div class="profile-item-icon" style="background:#EFF6FF">👤</div>
+            <div class="profile-item-text">
+              <div class="profile-item-name">Edit Profile</div>
+              <div class="profile-item-sub">Name, email, photo</div>
+            </div>
+            <span class="profile-item-right">›</span>
+          </div>
+          <div class="profile-item">
+            <div class="profile-item-icon" style="background:#F0FDF4">🔒</div>
+            <div class="profile-item-text">
+              <div class="profile-item-name">Security</div>
+              <div class="profile-item-sub">Password, 2FA</div>
+            </div>
+            <span class="profile-item-right">›</span>
+          </div>
+          <div class="profile-item">
+            <div class="profile-item-icon" style="background:#FFFBEB">🔔</div>
+            <div class="profile-item-text">
+              <div class="profile-item-name">Notifications</div>
+              <div class="profile-item-sub">Expiry alerts, reminders</div>
+            </div>
+            <span class="profile-item-right">›</span>
+          </div>
+        </div>
+
+        <!-- Preferences -->
+        <div class="profile-section">
+          <div class="profile-section-title">Preferences</div>
+          <div class="profile-item">
+            <div class="profile-item-icon" style="background:#F5F3FF">🌙</div>
+            <div class="profile-item-text">
+              <div class="profile-item-name">Appearance</div>
+              <div class="profile-item-sub">Light mode</div>
+            </div>
+            <span class="profile-item-right">›</span>
+          </div>
+          <div class="profile-item">
+            <div class="profile-item-icon" style="background:#F0FDF4">🗄️</div>
+            <div class="profile-item-text">
+              <div class="profile-item-name">Storage & Data</div>
+              <div class="profile-item-sub">Cache, backups</div>
+            </div>
+            <span class="profile-item-right">›</span>
+          </div>
+        </div>
+
+        <!-- Support -->
+        <div class="profile-section">
+          <div class="profile-section-title">Support</div>
+          <div class="profile-item">
+            <div class="profile-item-icon" style="background:#EFF6FF">❓</div>
+            <div class="profile-item-text">
+              <div class="profile-item-name">Help & FAQ</div>
+            </div>
+            <span class="profile-item-right">›</span>
+          </div>
+          <div class="profile-item">
+            <div class="profile-item-icon" style="background:#F8FAFC">ℹ️</div>
+            <div class="profile-item-text">
+              <div class="profile-item-name">About DocVault</div>
+              <div class="profile-item-sub">Version 1.0.0</div>
+            </div>
+            <span class="profile-item-right">›</span>
+          </div>
+        </div>
+
+        <div class="logout-btn">🚪 Sign Out</div>
+      </div>
+
+      <!-- Bottom Nav -->
+      <div class="bottom-nav">
+        <div class="nav-item">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+          <span class="nav-label">Home</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg></div>
+          <span class="nav-label">Docs</span>
+        </div>
+        <div class="nav-upload-btn">
+          <div class="upload-circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></div>
+          <span class="nav-label">Upload</span>
+        </div>
+        <div class="nav-item">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="15" y2="17"/><polyline points="9 9 12 9 12 13"/></svg></div>
+          <span class="nav-label">Folders</span>
+        </div>
+        <div class="nav-item active">
+          <div class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <span class="nav-label">Profile</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
