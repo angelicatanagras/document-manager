@@ -1,8 +1,33 @@
 const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/authMiddleware');
+const upload = require('../middleware/uploadMiddleware');
+const {
+  uploadDocument,
+  getDocuments,
+  getTrashedDocuments,
+  getDocument,
+  updateDocument,
+  deleteDocument,
+  restoreDocument,
+  permanentDelete,
+  downloadDocument,
+} = require('../controllers/documentController');
 
-// Placeholder — Epic 3 (Upload & Manage Documents)
-router.get('/', protect, (req, res) => res.json({ message: 'Documents route — coming soon' }));
+// /trash must come before /:id to avoid route conflict
+router.get('/trash', protect, getTrashedDocuments);
+
+router.route('/')
+  .get(protect, getDocuments)
+  .post(protect, upload.single('file'), uploadDocument);
+
+router.route('/:id')
+  .get(protect, getDocument)
+  .put(protect, updateDocument)
+  .delete(protect, deleteDocument);
+
+router.put('/:id/restore', protect, restoreDocument);
+router.delete('/:id/permanent', protect, permanentDelete);
+router.get('/:id/download', protect, downloadDocument);
 
 module.exports = router;
